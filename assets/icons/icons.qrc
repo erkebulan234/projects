@@ -1,0 +1,12 @@
+<RCC>
+  <qresource prefix="/icons">
+    <file>offers.png</file>
+    <file>plas.png</file>
+    <file>eror.png</file>
+    <file>home.png</file>
+    <file>menu.png</file>
+    <file>setting.png</file>
+    <file>bill.png</file>
+    <file>offers.png</file>
+  </qresource>
+</RCC>

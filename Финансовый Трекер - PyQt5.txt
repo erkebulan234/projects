@@ -1,0 +1,334 @@
+# 💰 Финансовый Трекер - PyQt5
+
+Современное приложение для управления личными финансами с красивым iOS-style дизайном.
+
+## 📱 Возможности
+
+### Основные экраны:
+1. **Главный экран (Dashboard)** - быстрый доступ ко всем функциям
+2. **Затраты** - просмотр расходов по категориям
+3. **Подписки** - управление подписками
+4. **Добавление расходов** - быстрое добавление новых трат
+5. **Статистика** - анализ и графики
+6. **Профиль** - настройки пользователя
+7. **Бюджет** - планирование месячного бюджета
+
+### Функциональность:
+- ✅ Навигация между экранами
+- ✅ Анимированные переходы
+- ✅ Красивые градиенты
+- ✅ Прогресс-бары
+- ✅ Кастомные виджеты
+- ✅ Адаптивный интерфейс
+
+## 🚀 Быстрый старт
+
+### Установка зависимостей:
+
+```bash
+pip install PyQt5
+```
+
+### Запуск приложения:
+
+```bash
+# Главное приложение с навигацией
+python main_app_navigation.py
+
+# Или отдельные экраны:
+python finance_tracker_main.py      # Экран затрат
+python subscriptions_screen.py      # Подписки
+python add_expense_screen.py        # Добавление расхода
+python statistics_screen.py         # Статистика
+python profile_settings_screen.py   # Профиль
+python budget_planning_screen.py    # Бюджет
+```
+
+### Демо кастомных виджетов:
+
+```bash
+python custom_widgets.py
+```
+
+## 📂 Структура проекта
+
+```
+finance-tracker/
+│
+├── main_app_navigation.py      # Главное приложение с навигацией
+├── custom_widgets.py            # Кастомные виджеты
+│
+├── finance_tracker_main.py      # Экран затрат
+├── subscriptions_screen.py      # Экран подписок
+├── add_expense_screen.py        # Добавление расхода
+├── statistics_screen.py         # Статистика
+├── profile_settings_screen.py   # Профиль и настройки
+├── budget_planning_screen.py    # Планирование бюджета
+│
+├── finance_tracker.ui           # UI файл для Qt Designer
+└── README.md                    # Этот файл
+```
+
+## 🎨 Кастомные виджеты
+
+### 1. AnimatedButton
+Кнопка с анимацией нажатия
+
+```python
+from custom_widgets import AnimatedButton
+
+btn = AnimatedButton("Нажми меня!")
+btn.clicked.connect(my_function)
+```
+
+### 2. CircularProgressBar
+Круговой прогресс-бар с процентами
+
+```python
+from custom_widgets import CircularProgressBar
+
+progress = CircularProgressBar()
+progress.setValue(75)  # 75%
+```
+
+### 3. GradientCard
+Карточка с красивым градиентом
+
+```python
+from custom_widgets import GradientCard
+
+card = GradientCard("#667EEA", "#764BA2")
+```
+
+### 4. CategoryIcon
+Иконка категории с фоном
+
+```python
+from custom_widgets import CategoryIcon
+
+icon = CategoryIcon("🍔", "#FF6B6B", size=50)
+```
+
+### 5. NotificationBanner
+Уведомления с автоматическим скрытием
+
+```python
+from custom_widgets import NotificationBanner
+
+banner = NotificationBanner("Расход добавлен!", "success")
+```
+
+### 6. AmountInput
+Поле ввода с автоформатированием сумм
+
+```python
+from custom_widgets import AmountInput
+
+amount = AmountInput()
+# Автоматически форматирует: 1000 → 1,000.00
+```
+
+### 7. ToggleSwitch
+iOS-style переключатель
+
+```python
+from custom_widgets import ToggleSwitch
+
+switch = ToggleSwitch()
+switch.toggled.connect(on_toggle)
+```
+
+### 8. ExpenseCategorySelector
+Селектор категорий расходов
+
+```python
+from custom_widgets import ExpenseCategorySelector
+
+selector = ExpenseCategorySelector()
+selector.categorySelected.connect(on_category_selected)
+```
+
+## 🔧 Использование навигации
+
+```python
+from main_app_navigation import FinanceApp
+
+app = FinanceApp()
+
+# Переход между экранами
+app.navigateTo("expenses")      # Затраты
+app.navigateTo("subscriptions") # Подписки
+app.navigateTo("add_expense")   # Добавить расход
+app.navigateTo("statistics")    # Статистика
+app.navigateTo("profile")       # Профиль
+app.navigateTo("budget")        # Бюджет
+app.navigateTo("main")          # Главная
+
+# Добавление расхода
+app.addExpense(
+    amount=50.00,
+    category="Еда",
+    description="Обед в ресторане",
+    date="2025-11-26"
+)
+```
+
+## 🎯 Основные классы
+
+### FinanceApp
+Главное приложение с управлением всеми экранами
+
+**Методы:**
+- `navigateTo(screen_name)` - навигация между экранами
+- `addExpense(amount, category, description, date)` - добавить расход
+
+**Свойства:**
+- `expenses` - список всех расходов
+- `budget` - месячный бюджет
+- `categories` - данные категорий
+
+### MainScreen
+Главный экран с быстрыми действиями
+
+### ExpensesScreen
+Просмотр расходов по категориям
+
+### SubscriptionsScreen
+Управление подписками
+
+### AddExpenseScreen
+Форма добавления нового расхода
+
+### StatisticsScreen
+Графики и аналитика
+
+### ProfileScreen
+Профиль пользователя и настройки
+
+### BudgetScreen
+Планирование месячного бюджета
+
+## 🎨 Цветовая палитра
+
+```python
+# Основные цвета
+PRIMARY_BLUE = "#007AFF"
+BACKGROUND = "#F5F5F7"
+WHITE = "#FFFFFF"
+TEXT_PRIMARY = "#1D1D1F"
+TEXT_SECONDARY = "#86868B"
+BORDER = "#E5E5E7"
+
+# Градиенты
+GRADIENT_PURPLE = ("#667EEA", "#764BA2")
+GRADIENT_GREEN = ("#11998E", "#38EF7D")
+GRADIENT_PINK = ("#F093FB", "#F5576C")
+GRADIENT_RED = ("#FF6B6B", "#F38181")
+
+# Категории
+FOOD = "#FF6B6B"
+TRANSPORT = "#4ECDC4"
+HOME = "#95E1D3"
+ENTERTAINMENT = "#F38181"
+BILLS = "#AA96DA"
+SHOPPING = "#FCBAD3"
+TRAVEL = "#A8E6CF"
+HEALTH = "#FFD3B6"
+```
+
+## 📝 Примеры кода
+
+### Создание экрана с навигацией
+
+```python
+class MyScreen(QtWidgets.QWidget):
+    def __init__(self, parent):
+        super().__init__()
+        self.parent = parent
+        self.setupUI()
+        
+    def setupUI(self):
+        layout = QtWidgets.QVBoxLayout(self)
+        
+        # Кнопка возврата
+        backBtn = QtWidgets.QPushButton("← Назад")
+        backBtn.clicked.connect(
+            lambda: self.parent.navigateTo("main")
+        )
+        layout.addWidget(backBtn)
+```
+
+### Добавление карточки
+
+```python
+card = QtWidgets.QWidget()
+card.setFixedHeight(100)
+card.setStyleSheet("""
+    QWidget {
+        background-color: white;
+        border-radius: 20px;
+    }
+""")
+
+cardLayout = QtWidgets.QHBoxLayout(card)
+# Добавляем содержимое...
+```
+
+### Создание градиентной кнопки
+
+```python
+button = QtWidgets.QPushButton("Сохранить")
+button.setStyleSheet("""
+    QPushButton {
+        background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+            stop:0 #11998E, stop:1 #38EF7D);
+        border: none;
+        border-radius: 15px;
+        color: white;
+        font-size: 16px;
+        font-weight: 600;
+        padding: 15px;
+    }
+    QPushButton:hover {
+        background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+            stop:0 #0D7A72, stop:1 #2DBF64);
+    }
+""")
+```
+
+## 🐛 Известные проблемы
+
+- Qt Designer может не отображать кастомные виджеты
+- Анимации могут работать медленно на слабых устройствах
+- Градиенты не поддерживаются в некоторых темах
+
+## 🔮 Планы на будущее
+
+- [ ] База данных для хранения данных
+- [ ] Экспорт в Excel/PDF
+- [ ] Графики с использованием matplotlib
+- [ ] Синхронизация между устройствами
+- [ ] Поддержка нескольких валют
+- [ ] Напоминания о платежах
+- [ ] Темная тема
+- [ ] Мультиязычность
+
+## 📄 Лицензия
+
+MIT License - используйте как хотите!
+
+## 👨‍💻 Автор
+
+Создано с ❤️ для управления личными финансами
+
+## 🤝 Вклад
+
+Приветствуются pull requests! Для серьезных изменений сначала откройте issue.
+
+## 📞 Поддержка
+
+Если у вас есть вопросы или предложения, создайте issue в репозитории.
+
+---
+
+**Приятного использования! 💰✨**

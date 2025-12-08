@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>700</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Финансовый Трекер</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QStackedWidget" name="stackedWidget">
+      <!-- Home Page -->
+      <widget class="QWidget" name="homePage">
+       <layout class="QVBoxLayout" name="homeLayout">
+        <item>
+         <widget class="QWidget" name="homeHeader">
+          <property name="minimumHeight"><number>100</number></property>
+          <layout class="QHBoxLayout" name="homeHeaderLayout">
+           <item>
+            <widget class="QLabel" name="labelAppTitle">
+             <property name="text"><string>Финансовый Трекер 💰</string></property>
+             <property name="alignment"><set>Qt::AlignCenter</set></property>
+             <property name="styleSheet"><string>font-size:20px; font-weight:700; color: white; background: qlineargradient(x1:0,y1:0,x2:1,y2:1,stop:0 #667EEA, stop:1 #764BA2); padding:18px; border-radius:8px;</string></property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QWidget" name="homeContent">
+          <layout class="QVBoxLayout" name="homeContentLayout">
+           <item>
+            <widget class="QLabel" name="labelQuickActions">
+             <property name="text"><string>Быстрые действия</string></property>
+             <property name="styleSheet"><string>font-size:16px; font-weight:600; padding-top:8px;</string></property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QWidget" name="quickActions">
+             <layout class="QGridLayout" name="gridQuickActions">
+              <item row="0" column="0">
+               <widget class="QPushButton" name="btnExpenses">
+                <property name="text"><string>Затраты</string></property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QPushButton" name="btnStatistics">
+                <property name="text"><string>Статистика</string></property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QPushButton" name="btnSubscriptions">
+                <property name="text"><string>Подписки</string></property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QPushButton" name="btnBudget">
+                <property name="text"><string>Бюджет</string></property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="labelRecent">
+             <property name="text"><string>Последние транзакции</string></property>
+             <property name="styleSheet"><string>font-size:14px; font-weight:600; padding-top:8px;</string></property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QListWidget" name="listRecent"/>
+           </item>
+           <item>
+            <spacer name="verticalSpacer">
+             <property name="orientation"><enum>Qt::Vertical</enum></property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <!-- Expenses Page -->
+      <widget class="QWidget" name="expensesPage">
+       <layout class="QVBoxLayout" name="expensesLayout">
+        <item>
+         <widget class="QWidget" name="expensesHeader">
+          <property name="minimumHeight"><number>88</number></property>
+          <layout class="QHBoxLayout" name="expensesHeaderLayout">
+           <item>
+            <widget class="QPushButton" name="btnBackFromExpenses">
+             <property name="text"><string>&lt;</string></property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="labelExpensesTitle">
+             <property name="text"><string>Затраты</string></property>
+             <property name="alignment"><set>Qt::AlignCenter</set></property>
+             <property name="styleSheet"><string>font-size:18px; font-weight:600;</string></property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="btnAddExpenseTop">
+             <property name="text"><string>+</string></property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QWidget" name="expensesControls">
+          <layout class="QHBoxLayout" name="expensesControlsLayout">
+           <item>
+            <widget class="QPushButton" name="btnRefreshCategories">
+             <property name="text"><string>🔄 Обновить</string></property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer">
+             <property name="orientation"><enum>Qt::Horizontal</enum></property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QListWidget" name="listCategories"/>
+        </item>
+       </layout>
+      </widget>
+      <!-- Categories Page -->
+      <widget class="QWidget" name="categoriesPage">
+       <layout class="QVBoxLayout" name="categoriesLayout">
+        <item>
+         <widget class="QLabel" name="labelCategoriesTitle">
+          <property name="text"><string>Категории</string></property>
+          <property name="styleSheet"><string>font-size:18px; font-weight:600; padding:12px;</string></property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QTableWidget" name="tableCategories">
+          <property name="columnCount"><number>4</number></property>
+          <property name="rowCount"><number>0</number></property>
+          <column>
+           <property name="text"><string>Иконка</string></property>
+          </column>
+          <column>
+           <property name="text"><string>Название</string></property>
+          </column>
+          <column>
+           <property name="text"><string>Потрачено</string></property>
+          </column>
+          <column>
+           <property name="text"><string>Бюджет</string></property>
+          </column>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <!-- Budget Page -->
+      <widget class="QWidget" name="budgetPage">
+       <layout class="QVBoxLayout" name="budgetLayout">
+        <item>
+         <widget class="QLabel" name="labelBudgetTitle">
+          <property name="text"><string>Бюджет</string></property>
+          <property name="styleSheet"><string>font-size:18px; font-weight:600; padding:12px;</string></property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="labelBudgetAmount">
+          <property name="text"><string>$2550.00</string></property>
+          <property name="styleSheet"><string>font-size:24px; font-weight:700; padding:8px;</string></property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <!-- History Page -->
+      <widget class="QWidget" name="historyPage">
+       <layout class="QVBoxLayout" name="historyLayout">
+        <item>
+         <widget class="QLabel" name="labelHistoryTitle">
+          <property name="text"><string>История</string></property>
+          <property name="styleSheet"><string>font-size:18px; font-weight:600; padding:12px;</string></property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QTableWidget" name="tableHistory">
+          <property name="columnCount"><number>4</number></property>
+          <property name="rowCount"><number>0</number></property>
+          <column>
+           <property name="text"><string>Дата</string></property>
+          </column>
+          <column>
+           <property name="text"><string>Категория</string></property>
+          </column>
+          <column>
+           <property name="text"><string>Сумма</string></property>
+          </column>
+          <column>
+           <property name="text"><string>Описание</string></property>
+          </column>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <!-- Profile Page -->
+      <widget class="QWidget" name="profilePage">
+       <layout class="QVBoxLayout" name="profileLayout">
+        <item>
+         <widget class="QLabel" name="labelProfileTitle">
+          <property name="text"><string>Профиль</string></property>
+          <property name="styleSheet"><string>font-size:18px; font-weight:600; padding:12px;</string></property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="labelProfileInfo">
+          <property name="text"><string>Имя: Иван Иванов
+Email: user@example.com</string></property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+    <!-- bottom navigation -->
+    <item>
+     <widget class="QWidget" name="bottomNav">
+      <property name="minimumHeight"><number>80</number></property>
+      <layout class="QHBoxLayout" name="bottomNavLayout">
+       <item>
+        <widget class="QPushButton" name="navHome">
+         <property name="text"><string>🏠</string></property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="navStats">
+         <property name="text"><string>📊</string></property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="navSubscriptions">
+         <property name="text"><string>💳</string></property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="navReports">
+         <property name="text"><string>📑</string></property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="navSettings">
+         <property name="text"><string>⚙️</string></property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar"/>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

@@ -1,0 +1,32 @@
+{
+  "budget": 2550.0,
+  "categories": {
+    "Еда": {
+      "spent": 842.5,
+      "budget": 800,
+      "color": "#FF6B6B",
+      "icon": "🍔"
+    },
+    "Транспорт": {
+      "spent": 650.0,
+      "budget": 500,
+      "color": "#4ECDC4",
+      "icon": "🚗"
+    },
+    "Дом": {
+      "spent": 520.3,
+      "budget": 600,
+      "color": "#95E1D3",
+      "icon": "🏠"
+    },
+    "Развлечения": {
+      "spent": 380.0,
+      "budget": 300,
+      "color": "#F38181",
+      "icon": "🎮"
+    }
+  },
+  "expenses": [],
+  "subscriptions": [],
+  "theme": "light"
+}
