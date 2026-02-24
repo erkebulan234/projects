@@ -375,38 +375,30 @@ def generate_ai_response(user_question, username, user_id):
             greeting += "\n\nЧто вас интересует?"
             return greeting
         
-        # Анализ и советы по экономии
         if any(word in question_lower for word in ["экономить", "сэкономить", "тратить меньше", "сократить расходы", "сберечь"]):
             return get_savings_advice(total_expenses, total_income, top_expense_categories)
         
-        # Составление бюджета
         elif any(word in question_lower for word in ["бюджет", "бюджетирование", "планирование", "план", "правило 50/30/20"]):
             return get_budget_advice(total_income, total_expenses)
         
-        # Накопления и инвестиции
         elif any(word in question_lower for word in ["накопления", "накопить", "инвестиции", "сбережения", "подушка безопасности", "копить"]):
             return get_savings_investment_advice(total_income, total_expenses)
         
-        # Анализ расходов
         elif any(word in question_lower for word in ["расходы", "траты", "куда уходят деньги", "анализ расходов", "на что трачу"]):
             return get_expense_analysis(total_expenses, top_expense_categories)
         
-        # Анализ доходов
         elif any(word in question_lower for word in ["доходы", "заработок", "прибыль", "анализ доходов", "сколько зарабатываю"]):
             return get_income_analysis(total_income, top_income_categories)
         
-        # Финансовое здоровье
         elif any(word in question_lower for word in ["финансовое здоровье", "финансовое состояние", "стабильность", "финансовый статус"]):
             return get_financial_health_advice(total_income, total_expenses)
         
-        # Общие вопросы
         elif "как начать" in question_lower or "с чего начать" in question_lower:
             return "**Как начать управлять финансами:**\n\n1. **Начните с учёта** - добавляйте все доходы и расходы\n2. **Анализируйте** - смотрите, куда уходят деньги\n3. **Ставьте цели** - определите, зачем вам экономить\n4. **Создайте бюджет** - используйте правило 50/30/20\n5. **Автоматизируйте** - настройте автоматические накопления\n\nХотите подробнее о каком-то из пунктов?"
         
         elif "совет" in question_lower or "рекомендац" in question_lower or "подскажи" in question_lower:
             return "**Топ-5 финансовых советов:**\n\n1. **Ведите учёт** - знайте свои финансы\n2. **Живите по средствам** - расходы ≤ доходы\n3. **Создайте подушку** - 3-6 месяцев расходов\n4. **Инвестируйте в себя** - образование и здоровье\n5. **Планируйте на будущее** - пенсия, крупные покупки\n\nКакой совет вас интересует больше?"
         
-        # Общий совет с учетом истории
         else:
             recent_topics = []
             for msg in chat_history[-3:]:

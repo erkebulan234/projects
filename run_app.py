@@ -1,13 +1,11 @@
 from flet import *
 from datetime import datetime as dt
 import datetime as datetime_module
-import threading
 from helpers import load_session, clear_session
 from ui.home_view import create_home_view
 from project import db_fetch_user_transactions
-from ui.push_notifications import PushNotificationManager, create_notification_bell
+from ui.push_notifications import PushNotificationManager
 
-# Импорты из модулей
 from db import (
     db_insert_transaction, 
     db_fetch_transactions_by_category,
@@ -77,11 +75,9 @@ def main(page: Page):
     )
 
 
-    # === АДАПТИВНЫЕ РАЗМЕРЫ ===
     screen_width = page.window.width or 400
     screen_height = page.window.height or 800
     
-    # Контейнеры для меню и главной страницы
     main_page_container = Container()
 
     greeting_text = Text(
@@ -91,7 +87,6 @@ def main(page: Page):
         weight=FontWeight.BOLD
     )
     
-    # Callbacks для обновления
     current_username = load_session()
     update_callbacks = {
         "load_session": load_session,
@@ -103,26 +98,21 @@ def main(page: Page):
         "mobile_padding": MOBILE_PADDING
     }
 
-    # ✅ ИСПРАВЛЕНИЕ: Правильно распаковываем кортеж из create_home_view
     home_content, refresh_home_ui = create_home_view(page, update_callbacks)
     
-    # ✅ ИСПРАВЛЕНИЕ: Сохраняем функцию обновления в callbacks
     update_callbacks['refresh_home_ui'] = refresh_home_ui
 
     notification_manager = PushNotificationManager(page)
     update_callbacks['notification_manager'] = notification_manager
 
-    # Запускаем менеджер уведомлений
     def start_notification_manager():
         notification_manager.start()
 
-    # Запускаем в отдельном потоке
     import threading
     threading.Thread(target=start_notification_manager, daemon=True).start()
 
     
     
-    # === АНИМАЦИЯ МЕНЮ (АДАПТИВНАЯ) ===
     def shrink(_e=None):
         main_page_container.width = responsive_size(100)
         main_page_container.scale = Scale(0.85, alignment=alignment.center_right)
@@ -2665,7 +2655,6 @@ def main(page: Page):
         content=Stack(controls=[page_1, page_2])
     )
 
-    # === РОУТИНГ ===
     def route_change(route):
             page.views.clear()
             current_route = page.route
@@ -2755,7 +2744,6 @@ def main(page: Page):
                 category = current_route.replace('/category/', '')
                 page.views.append(View(current_route, [create_category_view(category)], bgcolor=BG))
 
-            # Обновляем меню
             nonlocal page_1
             page_1 = create_left_menu()
             container.content = Stack(controls=[page_1, page_2])
@@ -2764,7 +2752,6 @@ def main(page: Page):
     page.on_route_change = route_change
     page.add(container)
 
-    # Стартовая навигация
     if load_session():
         page.go('/')
     else:
