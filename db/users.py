@@ -2,11 +2,7 @@ from .connection import get_db_conn
 
 
 def create_user_admin(username, email, password, role="user"):
-    """
-    Создаёт нового пользователя из админ-панели.
-    Возвращает (user_id, error_message) - error_message будет None при успехе.
-    """
-    # Валидация
+    
     if not username or not email or not password:
         return None, "Все поля обязательны для заполнения"
     
@@ -34,45 +30,19 @@ def create_user_admin(username, email, password, role="user"):
     try:
         with get_db_conn() as conn:
             with conn.cursor() as cur:
-                # Проверяем существование пользователя с таким username
                 cur.execute("SELECT user_id FROM users WHERE username = %s", (username,))
                 if cur.fetchone():
                     return None, "Пользователь с таким именем уже существует"
-                
-                # Проверяем существование пользователя с таким email
                 cur.execute("SELECT user_id FROM users WHERE email = %s", (email,))
                 if cur.fetchone():
                     return None, "Пользователь с таким email уже существует"
-                
-                # Хешируем пароль (используем тот же алгоритм, что и в обычной регистрации)
                 import hashlib
                 password_hash = hashlib.sha256(password.encode()).hexdigest()
-                
-                # Создаём пользователя
-                cur.execute("""
-                    INSERT INTO users (username, email, password_hash, role)
-                    VALUES (%s, %s, %s, %s)
-                    RETURNING user_id
-                """, (username, email, password_hash, role))
+                cur.execute(, (username, email, password_hash, role))
                 user_id = cur.fetchone()[0]
-
-                # Создаём профиль пользователя
-                cur.execute("""
-                    INSERT INTO user_profiles (user_id, full_name, currency)
-                    VALUES (%s, %s, 'KZT')
-                """, (user_id, username))
-
-                # Создаём основной счёт
-                cur.execute("""
-                    INSERT INTO accounts (user_id, account_name, account_type, balance)
-                    VALUES (%s, 'Основной счет', 'cash', 0.00)
-                """, (user_id,))
-
-                # Создаём дефолтные категории
-                cur.executemany("""
-                    INSERT INTO categories (category_name, category_type, user_id)
-                    VALUES (%s, %s, %s)
-                """, [(name, ctype, user_id) for name, ctype in DEFAULT_CATEGORIES])
+                cur.execute(, (user_id, username))
+                cur.execute(, (user_id,))
+                cur.executemany(, [(name, ctype, user_id) for name, ctype in DEFAULT_CATEGORIES])
 
                 conn.commit()
                 
@@ -87,7 +57,7 @@ def create_user_admin(username, email, password, role="user"):
     
     
 def fetch_all_users():
-    """Возвращает всех пользователей с их ролями"""
+    
     try:
         with get_db_conn() as conn:
             with conn.cursor() as cur:
@@ -99,7 +69,7 @@ def fetch_all_users():
         return []
 
 def get_user_role(username):
-    """Возвращает роль пользователя"""
+    
     try:
         with get_db_conn() as conn:
             with conn.cursor() as cur:
@@ -111,7 +81,7 @@ def get_user_role(username):
         return None
 
 def update_user(user_id, username=None, email=None, role=None):
-    """Обновляет данные пользователя"""
+    
     try:
         with get_db_conn() as conn:
             with conn.cursor() as cur:
@@ -128,7 +98,7 @@ def update_user(user_id, username=None, email=None, role=None):
         return False
 
 def delete_user_by_id(user_id):
-    """Удаляет пользователя и все связанные данные"""
+    
     try:
         with get_db_conn() as conn:
             with conn.cursor() as cur:
@@ -145,8 +115,7 @@ def delete_user_by_id(user_id):
 
 
 def get_current_user_id(username):
-    """Получает ID пользователя по имени"""
-    # ✅ ИСПРАВЛЕНИЕ: Преобразование в строку, чтобы предотвратить несовпадение типов в SQL
+    
     if username is not None:
         username = str(username) 
         
@@ -155,7 +124,6 @@ def get_current_user_id(username):
     try:
         with get_db_conn() as conn:
             with conn.cursor() as cur:
-                # В PostgreSQL строковые параметры, переданные через %s, автоматически заключаются в кавычки
                 cur.execute("SELECT user_id FROM users WHERE username = %s", (username,))
                 result = cur.fetchone()
                 return result[0] if result else None
@@ -164,10 +132,7 @@ def get_current_user_id(username):
         return None
 
 def create_user_with_defaults(username, email, password_hash):
-    """
-    Создаёт нового пользователя с дефолтным профилем, основным счётом и категориями.
-    Всё выполняется атомарно: либо создаётся полностью, либо откат при ошибке.
-    """
+    
     DEFAULT_CATEGORIES = [
         ('Продукты', 'expense'), ('Транспорт', 'expense'),
         ('Развлечения', 'expense'), ('Комм. услуги', 'expense'),
@@ -183,37 +148,15 @@ def create_user_with_defaults(username, email, password_hash):
     try:
         with get_db_conn() as conn:
             with conn.cursor() as cur:
-                # Проверяем существование пользователя
                 cur.execute("SELECT user_id FROM users WHERE username = %s", (username,))
                 if cur.fetchone():
                     return None, "Пользователь с таким именем уже существует"
-
-                # Создаём пользователя и сразу получаем ID
-                cur.execute("""
-                    INSERT INTO users (username, email, password_hash, role)
-                    VALUES (%s, %s, %s, 'user')
-                    RETURNING user_id
-                """, (username, email, password_hash))
+                cur.execute(, (username, email, password_hash))
                 user_id = cur.fetchone()[0]
+                cur.execute(, (user_id, username))
 
-                # Создаём профиль и основной счёт одновременно
-                cur.execute("""
-                    INSERT INTO user_profiles (user_id, full_name, currency)
-                    VALUES (%s, %s, 'KZT')
-                """, (user_id, username))
-
-                cur.execute("""
-                    INSERT INTO accounts (user_id, account_name, account_type, balance)
-                    VALUES (%s, 'Основной счет', 'cash', 0.00)
-                """, (user_id,))
-
-                # Вставка категорий одним запросом
-                cur.executemany("""
-                    INSERT INTO categories (category_name, category_type, user_id)
-                    VALUES (%s, %s, %s)
-                """, [(name, ctype, user_id) for name, ctype in DEFAULT_CATEGORIES])
-
-            # Коммитим только если всё прошло успешно
+                cur.execute(, (user_id,))
+                cur.executemany(, [(name, ctype, user_id) for name, ctype in DEFAULT_CATEGORIES])
             conn.commit()
 
         return {
@@ -223,13 +166,12 @@ def create_user_with_defaults(username, email, password_hash):
         }, None
 
     except Exception as e:
-        # В случае ошибки транзакция откатится автоматически благодаря контекстному менеджеру
         return None, str(e)
 
 
 
 def verify_user_credentials(username, password_hash):
-    """Проверяет учётные данные пользователя"""
+    
     try:
         with get_db_conn() as conn:
             with conn.cursor() as cur:
@@ -246,9 +188,6 @@ def verify_user_credentials(username, password_hash):
         return None, "Ошибка подключения к базе данных"
 
 def ensure_default_data():
-    """
-    Функция оставлена для совместимости, но больше не создаёт 'local' пользователя.
-    Каждый пользователь создаётся через регистрацию.
-    """
+    
     print("ensure_default_data: не требуется, пользователи создаются через регистрацию")
     return None

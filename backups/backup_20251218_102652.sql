@@ -1,11 +1,11 @@
---
--- PostgreSQL database dump
---
+
+
+
 
 \restrict LYRLUe1nMvIn8T0MMbAhWw4QT7oLWakIq4hRaMuvFHScaBfvmVoAlC5swD3qLlI
 
--- Dumped from database version 18.1
--- Dumped by pg_dump version 18.1
+
+
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -23,9 +23,9 @@ SET default_tablespace = '';
 
 SET default_table_access_method = heap;
 
---
--- Name: accounts; Type: TABLE; Schema: public; Owner: postgres
---
+
+
+
 
 CREATE TABLE public.accounts (
     account_id integer NOT NULL,
@@ -39,9 +39,9 @@ CREATE TABLE public.accounts (
 
 ALTER TABLE public.accounts OWNER TO postgres;
 
---
--- Name: accounts_account_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
+
+
+
 
 CREATE SEQUENCE public.accounts_account_id_seq
     AS integer
@@ -54,16 +54,16 @@ CREATE SEQUENCE public.accounts_account_id_seq
 
 ALTER SEQUENCE public.accounts_account_id_seq OWNER TO postgres;
 
---
--- Name: accounts_account_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
+
+
+
 
 ALTER SEQUENCE public.accounts_account_id_seq OWNED BY public.accounts.account_id;
 
 
---
--- Name: categories; Type: TABLE; Schema: public; Owner: postgres
---
+
+
+
 
 CREATE TABLE public.categories (
     category_id integer NOT NULL,
@@ -77,9 +77,9 @@ CREATE TABLE public.categories (
 
 ALTER TABLE public.categories OWNER TO postgres;
 
---
--- Name: categories_category_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
+
+
+
 
 CREATE SEQUENCE public.categories_category_id_seq
     AS integer
@@ -92,16 +92,16 @@ CREATE SEQUENCE public.categories_category_id_seq
 
 ALTER SEQUENCE public.categories_category_id_seq OWNER TO postgres;
 
---
--- Name: categories_category_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
+
+
+
 
 ALTER SEQUENCE public.categories_category_id_seq OWNED BY public.categories.category_id;
 
 
---
--- Name: chat_history; Type: TABLE; Schema: public; Owner: postgres
---
+
+
+
 
 CREATE TABLE public.chat_history (
     chat_id integer NOT NULL,
@@ -116,51 +116,51 @@ CREATE TABLE public.chat_history (
 
 ALTER TABLE public.chat_history OWNER TO postgres;
 
---
--- Name: TABLE chat_history; Type: COMMENT; Schema: public; Owner: postgres
---
+
+
+
 
 COMMENT ON TABLE public.chat_history IS '€бв®аЁп з в®ў Ї®«м§®ў вҐ«Ґ© б AI-б®ўҐв­ЁЄ®¬';
 
 
---
--- Name: COLUMN chat_history.chat_id; Type: COMMENT; Schema: public; Owner: postgres
---
+
+
+
 
 COMMENT ON COLUMN public.chat_history.chat_id IS '“­ЁЄ «м­л© Ё¤Ґ­вЁдЁЄ в®а б®®ЎйҐ­Ёп';
 
 
---
--- Name: COLUMN chat_history.user_id; Type: COMMENT; Schema: public; Owner: postgres
---
+
+
+
 
 COMMENT ON COLUMN public.chat_history.user_id IS 'ID Ї®«м§®ў вҐ«п (бўп§м б users)';
 
 
---
--- Name: COLUMN chat_history.message_text; Type: COMMENT; Schema: public; Owner: postgres
---
+
+
+
 
 COMMENT ON COLUMN public.chat_history.message_text IS '’ҐЄбв б®®ЎйҐ­Ёп';
 
 
---
--- Name: COLUMN chat_history.message_type; Type: COMMENT; Schema: public; Owner: postgres
---
+
+
+
 
 COMMENT ON COLUMN public.chat_history.message_type IS '’ЁЇ б®®ЎйҐ­Ёп: user Ё«Ё ai';
 
 
---
--- Name: COLUMN chat_history.created_at; Type: COMMENT; Schema: public; Owner: postgres
---
+
+
+
 
 COMMENT ON COLUMN public.chat_history.created_at IS '„ в  Ё ўаҐ¬п б®§¤ ­Ёп б®®ЎйҐ­Ёп';
 
 
---
--- Name: chat_history_chat_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
+
+
+
 
 CREATE SEQUENCE public.chat_history_chat_id_seq
     AS integer
@@ -173,16 +173,16 @@ CREATE SEQUENCE public.chat_history_chat_id_seq
 
 ALTER SEQUENCE public.chat_history_chat_id_seq OWNER TO postgres;
 
---
--- Name: chat_history_chat_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
+
+
+
 
 ALTER SEQUENCE public.chat_history_chat_id_seq OWNED BY public.chat_history.chat_id;
 
 
---
--- Name: notifications; Type: TABLE; Schema: public; Owner: postgres
---
+
+
+
 
 CREATE TABLE public.notifications (
     notification_id integer NOT NULL,
@@ -196,9 +196,9 @@ CREATE TABLE public.notifications (
 
 ALTER TABLE public.notifications OWNER TO postgres;
 
---
--- Name: notifications_notification_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
+
+
+
 
 CREATE SEQUENCE public.notifications_notification_id_seq
     AS integer
@@ -211,16 +211,16 @@ CREATE SEQUENCE public.notifications_notification_id_seq
 
 ALTER SEQUENCE public.notifications_notification_id_seq OWNER TO postgres;
 
---
--- Name: notifications_notification_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
+
+
+
 
 ALTER SEQUENCE public.notifications_notification_id_seq OWNED BY public.notifications.notification_id;
 
 
---
--- Name: transaction_logs; Type: TABLE; Schema: public; Owner: postgres
---
+
+
+
 
 CREATE TABLE public.transaction_logs (
     log_id integer NOT NULL,
@@ -237,9 +237,9 @@ CREATE TABLE public.transaction_logs (
 
 ALTER TABLE public.transaction_logs OWNER TO postgres;
 
---
--- Name: transaction_logs_log_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
+
+
+
 
 CREATE SEQUENCE public.transaction_logs_log_id_seq
     AS integer
@@ -252,16 +252,16 @@ CREATE SEQUENCE public.transaction_logs_log_id_seq
 
 ALTER SEQUENCE public.transaction_logs_log_id_seq OWNER TO postgres;
 
---
--- Name: transaction_logs_log_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
+
+
+
 
 ALTER SEQUENCE public.transaction_logs_log_id_seq OWNED BY public.transaction_logs.log_id;
 
 
---
--- Name: transactions; Type: TABLE; Schema: public; Owner: postgres
---
+
+
+
 
 CREATE TABLE public.transactions (
     transaction_id integer NOT NULL,
@@ -279,9 +279,9 @@ CREATE TABLE public.transactions (
 
 ALTER TABLE public.transactions OWNER TO postgres;
 
---
--- Name: transactions_transaction_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
+
+
+
 
 CREATE SEQUENCE public.transactions_transaction_id_seq
     AS integer
@@ -294,16 +294,16 @@ CREATE SEQUENCE public.transactions_transaction_id_seq
 
 ALTER SEQUENCE public.transactions_transaction_id_seq OWNER TO postgres;
 
---
--- Name: transactions_transaction_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
+
+
+
 
 ALTER SEQUENCE public.transactions_transaction_id_seq OWNED BY public.transactions.transaction_id;
 
 
---
--- Name: user_profiles; Type: TABLE; Schema: public; Owner: postgres
---
+
+
+
 
 CREATE TABLE public.user_profiles (
     profile_id integer NOT NULL,
@@ -315,9 +315,9 @@ CREATE TABLE public.user_profiles (
 
 ALTER TABLE public.user_profiles OWNER TO postgres;
 
---
--- Name: user_profiles_profile_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
+
+
+
 
 CREATE SEQUENCE public.user_profiles_profile_id_seq
     AS integer
@@ -330,16 +330,16 @@ CREATE SEQUENCE public.user_profiles_profile_id_seq
 
 ALTER SEQUENCE public.user_profiles_profile_id_seq OWNER TO postgres;
 
---
--- Name: user_profiles_profile_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
+
+
+
 
 ALTER SEQUENCE public.user_profiles_profile_id_seq OWNED BY public.user_profiles.profile_id;
 
 
---
--- Name: users; Type: TABLE; Schema: public; Owner: postgres
---
+
+
+
 
 CREATE TABLE public.users (
     user_id integer NOT NULL,
@@ -353,9 +353,9 @@ CREATE TABLE public.users (
 
 ALTER TABLE public.users OWNER TO postgres;
 
---
--- Name: users_user_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
+
+
+
 
 CREATE SEQUENCE public.users_user_id_seq
     AS integer
@@ -368,72 +368,72 @@ CREATE SEQUENCE public.users_user_id_seq
 
 ALTER SEQUENCE public.users_user_id_seq OWNER TO postgres;
 
---
--- Name: users_user_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
+
+
+
 
 ALTER SEQUENCE public.users_user_id_seq OWNED BY public.users.user_id;
 
 
---
--- Name: accounts account_id; Type: DEFAULT; Schema: public; Owner: postgres
---
+
+
+
 
 ALTER TABLE ONLY public.accounts ALTER COLUMN account_id SET DEFAULT nextval('public.accounts_account_id_seq'::regclass);
 
 
---
--- Name: categories category_id; Type: DEFAULT; Schema: public; Owner: postgres
---
+
+
+
 
 ALTER TABLE ONLY public.categories ALTER COLUMN category_id SET DEFAULT nextval('public.categories_category_id_seq'::regclass);
 
 
---
--- Name: chat_history chat_id; Type: DEFAULT; Schema: public; Owner: postgres
---
+
+
+
 
 ALTER TABLE ONLY public.chat_history ALTER COLUMN chat_id SET DEFAULT nextval('public.chat_history_chat_id_seq'::regclass);
 
 
---
--- Name: notifications notification_id; Type: DEFAULT; Schema: public; Owner: postgres
---
+
+
+
 
 ALTER TABLE ONLY public.notifications ALTER COLUMN notification_id SET DEFAULT nextval('public.notifications_notification_id_seq'::regclass);
 
 
---
--- Name: transaction_logs log_id; Type: DEFAULT; Schema: public; Owner: postgres
---
+
+
+
 
 ALTER TABLE ONLY public.transaction_logs ALTER COLUMN log_id SET DEFAULT nextval('public.transaction_logs_log_id_seq'::regclass);
 
 
---
--- Name: transactions transaction_id; Type: DEFAULT; Schema: public; Owner: postgres
---
+
+
+
 
 ALTER TABLE ONLY public.transactions ALTER COLUMN transaction_id SET DEFAULT nextval('public.transactions_transaction_id_seq'::regclass);
 
 
---
--- Name: user_profiles profile_id; Type: DEFAULT; Schema: public; Owner: postgres
---
+
+
+
 
 ALTER TABLE ONLY public.user_profiles ALTER COLUMN profile_id SET DEFAULT nextval('public.user_profiles_profile_id_seq'::regclass);
 
 
---
--- Name: users user_id; Type: DEFAULT; Schema: public; Owner: postgres
---
+
+
+
 
 ALTER TABLE ONLY public.users ALTER COLUMN user_id SET DEFAULT nextval('public.users_user_id_seq'::regclass);
 
 
---
--- Data for Name: accounts; Type: TABLE DATA; Schema: public; Owner: postgres
---
+
+
+
 
 COPY public.accounts (account_id, user_id, account_name, account_type, balance, created_at) FROM stdin;
 15	25	Основной счет	cash	0.00	2025-12-18 09:47:00.466353+05
@@ -444,9 +444,9 @@ COPY public.accounts (account_id, user_id, account_name, account_type, balance, 
 \.
 
 
---
--- Data for Name: categories; Type: TABLE DATA; Schema: public; Owner: postgres
---
+
+
+
 
 COPY public.categories (category_id, user_id, category_name, category_type, created_at) FROM stdin;
 221	13	Инвестиция	income	2025-12-17 20:40:30.092095+05
@@ -546,17 +546,17 @@ COPY public.categories (category_id, user_id, category_name, category_type, crea
 \.
 
 
---
--- Data for Name: chat_history; Type: TABLE DATA; Schema: public; Owner: postgres
---
+
+
+
 
 COPY public.chat_history (chat_id, user_id, message_text, message_type, created_at, session_id) FROM stdin;
 \.
 
 
---
--- Data for Name: notifications; Type: TABLE DATA; Schema: public; Owner: postgres
---
+
+
+
 
 COPY public.notifications (notification_id, user_id, message, type, is_read, created_at) FROM stdin;
 3	13	Новый доход: 12345 на сумму ₸25342.00	transaction	t	2025-12-17 08:23:31.364682+05
@@ -575,9 +575,9 @@ COPY public.notifications (notification_id, user_id, message, type, is_read, cre
 \.
 
 
---
--- Data for Name: transaction_logs; Type: TABLE DATA; Schema: public; Owner: postgres
---
+
+
+
 
 COPY public.transaction_logs (log_id, transaction_id, action, amount, transaction_type, old_balance, new_balance, user_id, created_at) FROM stdin;
 1	25	delete	25342.00	income	16362.00	-8980.00	13	2025-12-17 10:15:37.499425
@@ -594,17 +594,17 @@ COPY public.transaction_logs (log_id, transaction_id, action, amount, transactio
 \.
 
 
---
--- Data for Name: transactions; Type: TABLE DATA; Schema: public; Owner: postgres
---
+
+
+
 
 COPY public.transactions (transaction_id, user_id, account_id, category_id, amount, transaction_type, description, transaction_date, created_at) FROM stdin;
 \.
 
 
---
--- Data for Name: user_profiles; Type: TABLE DATA; Schema: public; Owner: postgres
---
+
+
+
 
 COPY public.user_profiles (profile_id, user_id, full_name, currency) FROM stdin;
 2	12	123456	KZT
@@ -615,9 +615,9 @@ COPY public.user_profiles (profile_id, user_id, full_name, currency) FROM stdin;
 \.
 
 
---
--- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
---
+
+
+
 
 COPY public.users (user_id, username, email, password_hash, created_at, role) FROM stdin;
 13	erkebulan	erkebulan@gmail.com	8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92	2025-12-15 17:24:28.757687+05	admin
@@ -628,289 +628,289 @@ COPY public.users (user_id, username, email, password_hash, created_at, role) FR
 \.
 
 
---
--- Name: accounts_account_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
+
+
+
 
 SELECT pg_catalog.setval('public.accounts_account_id_seq', 15, true);
 
 
---
--- Name: categories_category_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
+
+
+
 
 SELECT pg_catalog.setval('public.categories_category_id_seq', 240, true);
 
 
---
--- Name: chat_history_chat_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
+
+
+
 
 SELECT pg_catalog.setval('public.chat_history_chat_id_seq', 155, true);
 
 
---
--- Name: notifications_notification_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
+
+
+
 
 SELECT pg_catalog.setval('public.notifications_notification_id_seq', 16, true);
 
 
---
--- Name: transaction_logs_log_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
+
+
+
 
 SELECT pg_catalog.setval('public.transaction_logs_log_id_seq', 11, true);
 
 
---
--- Name: transactions_transaction_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
+
+
+
 
 SELECT pg_catalog.setval('public.transactions_transaction_id_seq', 38, true);
 
 
---
--- Name: user_profiles_profile_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
+
+
+
 
 SELECT pg_catalog.setval('public.user_profiles_profile_id_seq', 13, true);
 
 
---
--- Name: users_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
+
+
+
 
 SELECT pg_catalog.setval('public.users_user_id_seq', 25, true);
 
 
---
--- Name: accounts accounts_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
+
+
+
 
 ALTER TABLE ONLY public.accounts
     ADD CONSTRAINT accounts_pkey PRIMARY KEY (account_id);
 
 
---
--- Name: accounts accounts_user_id_account_name_key; Type: CONSTRAINT; Schema: public; Owner: postgres
---
+
+
+
 
 ALTER TABLE ONLY public.accounts
     ADD CONSTRAINT accounts_user_id_account_name_key UNIQUE (user_id, account_name);
 
 
---
--- Name: categories categories_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
+
+
+
 
 ALTER TABLE ONLY public.categories
     ADD CONSTRAINT categories_pkey PRIMARY KEY (category_id);
 
 
---
--- Name: categories categories_user_id_category_name_key; Type: CONSTRAINT; Schema: public; Owner: postgres
---
+
+
+
 
 ALTER TABLE ONLY public.categories
     ADD CONSTRAINT categories_user_id_category_name_key UNIQUE (user_id, category_name);
 
 
---
--- Name: chat_history chat_history_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
+
+
+
 
 ALTER TABLE ONLY public.chat_history
     ADD CONSTRAINT chat_history_pkey PRIMARY KEY (chat_id);
 
 
---
--- Name: notifications notifications_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
+
+
+
 
 ALTER TABLE ONLY public.notifications
     ADD CONSTRAINT notifications_pkey PRIMARY KEY (notification_id);
 
 
---
--- Name: transaction_logs transaction_logs_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
+
+
+
 
 ALTER TABLE ONLY public.transaction_logs
     ADD CONSTRAINT transaction_logs_pkey PRIMARY KEY (log_id);
 
 
---
--- Name: transactions transactions_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
+
+
+
 
 ALTER TABLE ONLY public.transactions
     ADD CONSTRAINT transactions_pkey PRIMARY KEY (transaction_id);
 
 
---
--- Name: user_profiles user_profiles_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
+
+
+
 
 ALTER TABLE ONLY public.user_profiles
     ADD CONSTRAINT user_profiles_pkey PRIMARY KEY (profile_id);
 
 
---
--- Name: user_profiles user_profiles_user_id_key; Type: CONSTRAINT; Schema: public; Owner: postgres
---
+
+
+
 
 ALTER TABLE ONLY public.user_profiles
     ADD CONSTRAINT user_profiles_user_id_key UNIQUE (user_id);
 
 
---
--- Name: users users_email_key; Type: CONSTRAINT; Schema: public; Owner: postgres
---
+
+
+
 
 ALTER TABLE ONLY public.users
     ADD CONSTRAINT users_email_key UNIQUE (email);
 
 
---
--- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
+
+
+
 
 ALTER TABLE ONLY public.users
     ADD CONSTRAINT users_pkey PRIMARY KEY (user_id);
 
 
---
--- Name: users users_username_key; Type: CONSTRAINT; Schema: public; Owner: postgres
---
+
+
+
 
 ALTER TABLE ONLY public.users
     ADD CONSTRAINT users_username_key UNIQUE (username);
 
 
---
--- Name: idx_categories_user_name; Type: INDEX; Schema: public; Owner: postgres
---
+
+
+
 
 CREATE INDEX idx_categories_user_name ON public.categories USING btree (user_id, category_name);
 
 
---
--- Name: idx_chat_history_created_at; Type: INDEX; Schema: public; Owner: postgres
---
+
+
+
 
 CREATE INDEX idx_chat_history_created_at ON public.chat_history USING btree (created_at);
 
 
---
--- Name: idx_chat_history_session; Type: INDEX; Schema: public; Owner: postgres
---
+
+
+
 
 CREATE INDEX idx_chat_history_session ON public.chat_history USING btree (session_id);
 
 
---
--- Name: idx_chat_history_user_id; Type: INDEX; Schema: public; Owner: postgres
---
+
+
+
 
 CREATE INDEX idx_chat_history_user_id ON public.chat_history USING btree (user_id);
 
 
---
--- Name: idx_notifications_user_id; Type: INDEX; Schema: public; Owner: postgres
---
+
+
+
 
 CREATE INDEX idx_notifications_user_id ON public.notifications USING btree (user_id);
 
 
---
--- Name: idx_transactions_category_id; Type: INDEX; Schema: public; Owner: postgres
---
+
+
+
 
 CREATE INDEX idx_transactions_category_id ON public.transactions USING btree (category_id);
 
 
---
--- Name: idx_transactions_date; Type: INDEX; Schema: public; Owner: postgres
---
+
+
+
 
 CREATE INDEX idx_transactions_date ON public.transactions USING btree (transaction_date);
 
 
---
--- Name: idx_transactions_user_id; Type: INDEX; Schema: public; Owner: postgres
---
+
+
+
 
 CREATE INDEX idx_transactions_user_id ON public.transactions USING btree (user_id);
 
 
---
--- Name: accounts accounts_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
+
+
+
 
 ALTER TABLE ONLY public.accounts
     ADD CONSTRAINT accounts_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(user_id) ON DELETE CASCADE;
 
 
---
--- Name: categories categories_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
+
+
+
 
 ALTER TABLE ONLY public.categories
     ADD CONSTRAINT categories_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(user_id) ON DELETE CASCADE;
 
 
---
--- Name: chat_history chat_history_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
+
+
+
 
 ALTER TABLE ONLY public.chat_history
     ADD CONSTRAINT chat_history_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(user_id) ON DELETE CASCADE;
 
 
---
--- Name: notifications notifications_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
+
+
+
 
 ALTER TABLE ONLY public.notifications
     ADD CONSTRAINT notifications_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(user_id) ON DELETE CASCADE;
 
 
---
--- Name: transactions transactions_account_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
+
+
+
 
 ALTER TABLE ONLY public.transactions
     ADD CONSTRAINT transactions_account_id_fkey FOREIGN KEY (account_id) REFERENCES public.accounts(account_id) ON DELETE RESTRICT;
 
 
---
--- Name: transactions transactions_category_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
+
+
+
 
 ALTER TABLE ONLY public.transactions
     ADD CONSTRAINT transactions_category_id_fkey FOREIGN KEY (category_id) REFERENCES public.categories(category_id) ON DELETE RESTRICT;
 
 
---
--- Name: transactions transactions_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
+
+
+
 
 ALTER TABLE ONLY public.transactions
     ADD CONSTRAINT transactions_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(user_id) ON DELETE CASCADE;
 
 
---
--- Name: user_profiles user_profiles_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
+
+
+
 
 ALTER TABLE ONLY public.user_profiles
     ADD CONSTRAINT user_profiles_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(user_id) ON DELETE CASCADE;
 
 
---
--- PostgreSQL database dump complete
---
+
+
+
 
 \unrestrict LYRLUe1nMvIn8T0MMbAhWw4QT7oLWakIq4hRaMuvFHScaBfvmVoAlC5swD3qLlI
 

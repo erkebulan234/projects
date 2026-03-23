@@ -1,6 +1,4 @@
-"""
-Модуль helpers - вспомогательные функции
-"""
+
 from .session import load_session, write_session, clear_session
 
 

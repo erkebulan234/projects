@@ -1,21 +1,13 @@
 from .connection import get_db_conn
 
 def save_chat_message(user_id, session_id, message_text, message_type):
-    """
-    Сохраняет сообщение в истории чата (БЕЗ СЕССИЙ - session_id игнорируется)
-    """
+    
     try:
         conn = get_db_conn()
         cursor = conn.cursor()
         
         print(f"DEBUG DB: Сохраняю сообщение для user_id={user_id}, type={message_type}")
-        
-        # Сохраняем без session_id
-        cursor.execute("""
-            INSERT INTO chat_history (user_id, message_text, message_type, created_at)
-            VALUES (%s, %s, %s, NOW())
-            RETURNING chat_id
-        """, (user_id, message_text, message_type))
+        cursor.execute(, (user_id, message_text, message_type))
         
         message_id = cursor.fetchone()[0]
         print(f"DEBUG DB: Сообщение сохранено с chat_id={message_id}")
@@ -33,22 +25,14 @@ def save_chat_message(user_id, session_id, message_text, message_type):
             conn.close()
 
 def get_chat_history(user_id, limit=50):
-    """
-    Получает историю чата пользователя (БЕЗ СЕССИЙ)
-    """
+    
     try:
         conn = get_db_conn()
         cursor = conn.cursor()
         
         print(f"DEBUG DB: Получаю историю для user_id={user_id}, limit={limit}")
         
-        cursor.execute("""
-            SELECT chat_id, message_text, message_type, created_at
-            FROM chat_history
-            WHERE user_id = %s
-            ORDER BY created_at DESC
-            LIMIT %s
-        """, (user_id, limit))
+        cursor.execute(, (user_id, limit))
         
         messages = []
         for row in cursor.fetchall():
@@ -60,8 +44,6 @@ def get_chat_history(user_id, limit=50):
             })
         
         print(f"DEBUG DB: Найдено {len(messages)} сообщений")
-        
-        # Возвращаем в правильном порядке (от старых к новым)
         messages.reverse()
         return messages
         
@@ -75,14 +57,12 @@ def get_chat_history(user_id, limit=50):
             conn.close()
 
 def clear_chat_history(user_id):
-    """Очищает всю историю чата для пользователя (БЕЗ СЕССИЙ)"""
+    
     try:
         conn = get_db_conn()
         cursor = conn.cursor()
         
         print(f"DEBUG DB: Очищаю чат для user_id={user_id}")
-        
-        # Удаляем все сообщения пользователя
         cursor.execute("DELETE FROM chat_history WHERE user_id = %s", (user_id,))
         
         deleted_count = cursor.rowcount
@@ -101,7 +81,7 @@ def clear_chat_history(user_id):
             conn.close()
 
 def delete_chat_message(message_id):
-    """Удаляет одно сообщение из истории чата"""
+    
     try:
         conn = get_db_conn()
         cursor = conn.cursor()

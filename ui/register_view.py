@@ -5,7 +5,7 @@ from helpers import show_alert, is_valid_email, write_session
 from project import create_user
 
 def create_register_view(page, greeting_text=None):
-    """Создаёт адаптивный view для регистрации для мобильных"""
+    
     screen_width = page.window.width or 400
     
     username_field = TextField(

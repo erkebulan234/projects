@@ -1,4 +1,3 @@
-# ui/__init__.py
 
 from .constants import (
     BG, FWG, FG, PINK,
@@ -17,8 +16,6 @@ from .notifications_view import create_notifications_view, create_notifications_
 from .search_view import create_search_view
 from .stats_view import create_statistics_view
 from .settings_view import create_settings_view
-
-# Импортируем модуль push уведомлений
 from .push_notifications import (
     PushNotificationManager,
     create_notification_bell,
@@ -46,7 +43,6 @@ __all__ = [
     'EXPENSE_COLOR',
     'INCOME_CATEGORIES',
     'EXPENSE_CATEGORIES',
-    # Добавленные импорты для push уведомлений
     'PushNotificationManager',
     'create_notification_bell',
     'check_and_notify_budget_exceeded',

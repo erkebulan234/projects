@@ -8,7 +8,7 @@ SESSION_FILE = "session.json"
 SESSION_FILE = "session.json"
 
 def load_session():
-    """Загружает имя пользователя из сессии"""
+    
     if os.path.exists(SESSION_FILE):
         try:
             with open(SESSION_FILE, 'r', encoding='utf-8') as f:
@@ -20,7 +20,7 @@ def load_session():
     return None
 
 def write_session(username):
-    """Сохраняет имя пользователя в сессию"""
+    
     try:
         with open(SESSION_FILE, 'w', encoding='utf-8') as f:
             json.dump({"username": username}, f, ensure_ascii=False)
@@ -30,7 +30,7 @@ def write_session(username):
         return False
 
 def clear_session():
-    """Очищает сессию (удаляет файл)"""
+    
     try:
         if os.path.exists(SESSION_FILE):
             os.remove(SESSION_FILE)
@@ -41,7 +41,7 @@ def clear_session():
 
 
 def show_alert(page, message, bgcolor="red"):
-    """Универсальный alert с поддержкой цвета"""
+    
     page.snack_bar = SnackBar(
         content=Text(message, color="white"),
         bgcolor=bgcolor

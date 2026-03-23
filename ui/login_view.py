@@ -5,7 +5,7 @@ from helpers import show_alert, write_session
 from project import verify_user
 
 def create_login_view(page):
-    """Создаёт адаптивный view для входа в систему для мобильных"""
+    
     screen_width = page.window.width or 400
     
     username_field = TextField(

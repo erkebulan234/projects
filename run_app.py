@@ -53,7 +53,6 @@ def safe_username():
     return s
 
 def main(page: Page):
-    # === АДАПТИВНЫЕ НАСТРОЙКИ СТРАНИЦЫ ===
     page.padding = 0
     page.spacing = 0
     page.window.width = 400
@@ -134,7 +133,6 @@ def main(page: Page):
     update_callbacks['shrink'] = shrink
     update_callbacks['restore'] = restore
 
-    # === АВАТАР ДЛЯ МЕНЮ (АДАПТИВНЫЙ) ===
 
     def create_admin_view(page: Page, callbacks):
         current_username = callbacks.get("username") or load_session()
@@ -494,7 +492,7 @@ def main(page: Page):
                 show_alert(page, "Выберите роль", bgcolor="red")
                 return
             
-            # Используем новую функцию create_user_admin
+            # Используем функцию create_user_admin
             print("Вызываем create_user_admin...")
             user_id, error_message = create_user_admin(
                 username=new_username.value,
@@ -1270,7 +1268,6 @@ def main(page: Page):
                     
                     if goal['deadline']:
                         try:
-                            # ИСПРАВЛЕНИЕ: используем dt вместо datetime
                             if isinstance(goal['deadline'], str):
                                 deadline = dt.strptime(goal['deadline'], '%Y-%m-%d')
                             else:
@@ -1312,7 +1309,6 @@ def main(page: Page):
                                 Container(
                                     content=Row([
                                         Container(
-                                            # ИСПРАВЛЕНИЕ: progress теперь точно float
                                             width=(screen_width - 100) * (progress / 100),
                                             height=10,
                                             bgcolor=PINK,
@@ -1379,7 +1375,6 @@ def main(page: Page):
             # Статистика
             stats = get_savings_goal_progress(user_id)
             
-            # ИСПРАВЛЕНИЕ: Преобразуем значения в float
             total_current = float(stats['total_current']) if stats['total_current'] is not None else 0
             total_target = float(stats['total_target']) if stats['total_target'] is not None else 0
             total_progress = float(stats['total_progress']) if stats['total_progress'] is not None else 0
@@ -1440,7 +1435,6 @@ def main(page: Page):
                 ], tight=True),
                 actions=[
                     TextButton("Отмена", on_click=lambda e: page.close(dialog)),
-                    # ИСПРАВЛЕНИЕ: используем style вместо bgcolor и color
                     TextButton(
                         "Создать", 
                         on_click=save_goal,
@@ -1464,7 +1458,6 @@ def main(page: Page):
                         show_alert(page, "Сумма должна быть больше 0", bgcolor="red")
                         return
                     
-                    # ИСПРАВЛЕНИЕ: используем 'goal_id' вместо 'id'
                     goal_id = int(goal['goal_id']) if isinstance(goal['goal_id'], (int, float)) else goal['goal_id']
                     
                     new_amount = add_to_savings_goal(goal_id, amount, user_id)
@@ -1502,7 +1495,6 @@ def main(page: Page):
             
             if goal['deadline']:
                 try:
-                    # ИСПРАВЛЕНИЕ: используем dt вместо datetime
                     if isinstance(goal['deadline'], str):
                         deadline_date = dt.strptime(goal['deadline'], '%Y-%m-%d').date()
                     elif hasattr(goal['deadline'], 'date'):  # для datetime.datetime или datetime.date
@@ -1534,7 +1526,6 @@ def main(page: Page):
                 deadline = None
                 if deadline_field.value:
                     try:
-                        # ИСПРАВЛЕНИЕ: используем dt вместо datetime
                         deadline = dt.strptime(deadline_field.value, "%d.%m.%Y").strftime("%Y-%m-%d")
                     except:
                         show_alert(page, "Неверный формат даты. Используйте ДД.ММ.ГГГГ", bgcolor="red")
@@ -1555,7 +1546,6 @@ def main(page: Page):
                 else:
                     show_alert(page, "Ошибка при обновлении цели", bgcolor="red")
             
-            # ... остальной код без изменений
             
             dialog = AlertDialog(
                 modal=True,
@@ -1582,8 +1572,7 @@ def main(page: Page):
         def delete_goal_dialog(goal):
             """Диалог удаления цели"""
             def confirm_delete(e):
-                # ИСПРАВЛЕНИЕ: используем 'goal_id' вместо 'id'
-                success = delete_savings_goal(goal['goal_id'], user_id)  # <-- ИСПРАВЛЕНО ЗДЕСЬ
+                success = delete_savings_goal(goal['goal_id'], user_id)  
                 if success:
                     show_alert(page, f"Цель '{goal['goal_name']}' удалена!", bgcolor="green")
                     page.close(dialog)
@@ -1651,7 +1640,6 @@ def main(page: Page):
             ])
         )
 
-    # === СОЗДАНИЕ ТРАНЗАКЦИИ (АДАПТИВНАЯ) ===
     def create_transaction_view():
         amount_field = TextField(
             label="Сумма",
@@ -1698,7 +1686,7 @@ def main(page: Page):
             on_click=lambda e: show_categories()
         )
 
-        # Кнопки выбора типа транзакции (адаптивные)
+        # Кнопки выбора типа транзакции 
         button_width = (screen_width - 4*MOBILE_PADDING - 10) / 2
         
         def select_expense(e):
@@ -1743,7 +1731,6 @@ def main(page: Page):
             on_click=select_income
         )
 
-    # run_app.py - в функции create_transaction_view()
         def show_categories():
             category_buttons = []
             columns_count = 2  # На мобильных 2 колонки
@@ -1799,7 +1786,7 @@ def main(page: Page):
                                         icon=Icons.ARROW_BACK,
                                         icon_color=FWG,
                                         icon_size=responsive_size(24),
-                                        on_click=lambda e: (page.views.pop(), page.update())  # ИСПРАВЛЕНО: Возвращаемся на страницу создания транзакции
+                                        on_click=lambda e: (page.views.pop(), page.update())  
                                     ),
                                     Text(f"Выберите категорию ({'расходов' if selected_type.value == 'expense' else 'доходов'})", 
                                         color=FWG, 
@@ -1812,7 +1799,7 @@ def main(page: Page):
                                         controls=grid_items,
                                         spacing=MOBILE_PADDING,
                                         height=screen_height - responsive_size(150),
-                                        scroll="auto"  # ИСПРАВЛЕНО: Добавляем скроллинг
+                                        scroll="auto"  
                                 )
                                 )
                             ],
@@ -1927,7 +1914,6 @@ def main(page: Page):
             )
         )
 
-    # Замените функцию ai_view() в run_app.py на эту упрощенную версию
 
     def ai_view():
         """Упрощенный чат с AI-советником без сессий"""
@@ -2345,7 +2331,6 @@ def main(page: Page):
         
         return main_container
 
-    # === КАТЕГОРИЯ ТРАНЗАКЦИЙ (АДАПТИВНАЯ) ===
     def create_category_view(category_name):
         current_username = load_session()
         
@@ -2430,7 +2415,6 @@ def main(page: Page):
             )
         )
 
-    # === ЛЕВОЕ МЕНЮ (АДАПТИВНОЕ) ===
     def menu_logout(e=None):
         clear_session()
         greeting_text.value = "Привет, пользователь"
@@ -2547,7 +2531,6 @@ def main(page: Page):
                 )
             )
         
-        # Админские элементы (если есть)
         if user_role == "admin":
             scroll_content.append(
                 Container(

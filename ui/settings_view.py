@@ -9,8 +9,6 @@ import sys
 import tempfile
 import shutil
 import time
-
-# Если не установлен fpdf, установите через pip install fpdf
 try:
     from fpdf import FPDF
     HAS_FPDF = True
@@ -19,16 +17,14 @@ except ImportError:
     print("Для экспорта в PDF установите fpdf: pip install fpdf")
 
 def create_settings_view(page, update_transactions_callback, update_categories_callback):
-    """Создаёт адаптивный view для настроек для мобильных"""
+    
     screen_width = page.window.width or 400
     screen_height = page.window.height or 800
-    
-    # Создаем FilePicker для экспорта PDF
     file_picker = FilePicker()
     page.overlay.append(file_picker)
     
     def check_admin_permission():
-        """Проверяет, является ли текущий пользователь администратором"""
+        
         current_username = load_session()
         if not current_username:
             return False
@@ -40,69 +36,38 @@ def create_settings_view(page, update_transactions_callback, update_categories_c
             return False
     
     def backup_database():
-        """
-        Создает резервную копию базы данных PostgreSQL, используя утилиту pg_dump.
-        Только для администраторов.
-        """
-        # Проверяем права администратора
+        
         if not check_admin_permission():
             show_alert(page, "❌ Доступ запрещен. Только администраторы могут создавать бэкапы.", bgcolor='red')
             return
-        
-        # Показываем индикатор загрузки
         page.splash = ProgressBar()
         page.update()
         
         try:
-            # 1. Создаем папку для бэкапов, если нет
             backup_dir = "backups"
             if not os.path.exists(backup_dir):
                 os.makedirs(backup_dir)
-
-            # 2. Параметры подключения
             pg_host = os.getenv("PG_HOST", "localhost")
             pg_port = os.getenv("PG_PORT", "5432")
             pg_db = os.getenv("PG_DB", "finance_tracker")
             pg_user = os.getenv("PG_USER", "postgres")
             pg_password = os.getenv("PG_PASSWORD", "1234")
-
-            # Устанавливаем пароль в переменную окружения, чтобы pg_dump мог подключиться
             os.environ["PGPASSWORD"] = pg_password
-
-            # 3. Формируем имя файла с датой
             timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
             filename = f"{backup_dir}/backup_{pg_db}_{timestamp}.sql"
             
             print(f"Начинаю создание бэкапа базы {pg_db}...")
-
-            # 4. Команда запуска pg_dump
             command = [
                 "pg_dump",
                 "-h", pg_host,
                 "-p", pg_port,
                 "-U", pg_user,
-                "-F", "p",          # Формат plain text (SQL скрипт)
-                "-f", filename,     # Куда сохранить
-                pg_db
-            ]
-
-            try:
-                # Запускаем процесс
-                result = subprocess.run(
-                    command, 
-                    check=True,
-                    capture_output=True,
-                    text=True
-                )
-                
-                # Успешное завершение
-                show_alert(page, 
+                "-F", "p",
+                "-f", filename,
                     f"✅ Бэкап успешно создан!\nФайл: {filename}\nРазмер: {os.path.getsize(filename) / 1024:.1f} KB", 
                     bgcolor='green'
                 )
                 print(f"✅ Успешно! Бэкап сохранен в: {filename}")
-                
-                # Пытаемся открыть папку с бэкапами
                 try:
                     if sys.platform == "win32":
                         os.startfile(backup_dir)
@@ -129,12 +94,11 @@ def create_settings_view(page, update_transactions_callback, update_categories_c
             print(f"❌ Неожиданная ошибка: {e}")
             
         finally:
-            # Убираем индикатор загрузки
             page.splash = None
             page.update()
     
     def clear_all_transactions():
-        """Удаляет все транзакции"""
+        
         current_username = load_session()
         if not current_username:
             show_alert(page, "Ошибка: Не удалось найти активного пользователя.", bgcolor='red')
@@ -154,30 +118,21 @@ def create_settings_view(page, update_transactions_callback, update_categories_c
             page.update()
     
     def save_pdf_file(e: FilePickerResultEvent):
-        """Сохранение PDF файла после выбора места"""
+        
         print(f"FilePicker result: path={e.path}, files={e.files}")
         
         if e.path:
             try:
-                # Получаем данные из временного файла
                 temp_file = getattr(file_picker, '_temp_pdf_file', None)
                 print(f"Temp file path: {temp_file}")
                 
                 if temp_file and os.path.exists(temp_file):
                     print(f"Copying PDF from {temp_file} to {e.path}")
-                    
-                    # Добавляем расширение .pdf если его нет
                     save_path = e.path
                     if not save_path.endswith('.pdf'):
                         save_path += '.pdf'
-                    
-                    # Копируем временный файл в выбранное место
                     shutil.copy(temp_file, save_path)
-                    
-                    # Удаляем временный файл
                     os.unlink(temp_file)
-                    
-                    # Показываем диалог успешного сохранения
                     show_success_dialog(save_path)
                     
                     print(f"PDF успешно сохранен в: {save_path}")
@@ -193,19 +148,15 @@ def create_settings_view(page, update_transactions_callback, update_categories_c
         else:
             show_alert(page, "Сохранение отменено", bgcolor='orange')
             print("Сохранение PDF отменено пользователем")
-    
-    # Подключаем обработчик для FilePicker
     file_picker.on_result = save_pdf_file
     
     def debug_transactions_structure():
-        """Функция для отладки структуры транзакций"""
+        
         current_username = load_session()
         if not current_username:
             return
         
         print("\n=== ДЕБАГ СТРУКТУРЫ ТРАНЗАКЦИЙ ===")
-        
-        # Способ 1
         try:
             trans1 = db_fetch_all_transactions(current_username)
             if trans1 and len(trans1) > 0:
@@ -213,8 +164,6 @@ def create_settings_view(page, update_transactions_callback, update_categories_c
                 print(f"Способ 1 - ключи: {list(trans1[0].keys())}")
         except Exception as e:
             print(f"Ошибка способа 1: {e}")
-        
-        # Способ 2
         try:
             from project import db_fetch_user_transactions
             trans2 = db_fetch_user_transactions(current_username)
@@ -227,7 +176,7 @@ def create_settings_view(page, update_transactions_callback, update_categories_c
         print("=== КОНЕЦ ДЕБАГА ===\n")
     
     def generate_pdf_report():
-        """Генерирует PDF отчет и возвращает путь к временному файлу"""
+        
         print("=== Начало генерации PDF отчета ===")
         
         current_username = load_session()
@@ -242,8 +191,6 @@ def create_settings_view(page, update_transactions_callback, update_categories_c
             show_alert(page, "❌ Модуль fpdf не установлен.", bgcolor='red')
             print("Ошибка: fpdf не установлен")
             return None
-        
-        # Получаем ID пользователя
         user_id = get_current_user_id(current_username)
         print(f"ID пользователя: {user_id}")
         
@@ -251,21 +198,13 @@ def create_settings_view(page, update_transactions_callback, update_categories_c
             show_alert(page, "❌ Не удалось найти ID пользователя.", bgcolor='red')
             print("Ошибка: ID пользователя не найден")
             return None
-        
-        # Получаем все транзакции для этого пользователя
         print("Получение транзакций...")
-        
-        # Пробуем получить транзакции разными способами
         transactions = []
-        
-        # Способ 1: Через db_fetch_all_transactions
         try:
             transactions = db_fetch_all_transactions(current_username)
             print(f"Способ 1 (db_fetch_all_transactions): найдено {len(transactions)} транзакций")
         except Exception as e:
             print(f"Ошибка способа 1: {e}")
-        
-        # Способ 2: Через project.db_fetch_user_transactions (импортируем)
         if not transactions:
             try:
                 from project import db_fetch_user_transactions
@@ -273,30 +212,19 @@ def create_settings_view(page, update_transactions_callback, update_categories_c
                 print(f"Способ 2 (project.db_fetch_user_transactions): найдено {len(transactions)} транзакций")
             except Exception as e:
                 print(f"Ошибка способа 2: {e}")
-        
-        # Способ 3: Через run_app (импортируем из текущего контекста)
         if not transactions and 'db_fetch_user_transactions' in globals():
             try:
                 transactions = db_fetch_user_transactions(current_username)
                 print(f"Способ 3 (локальная функция): найдено {len(transactions)} транзакций")
             except Exception as e:
                 print(f"Ошибка способа 3: {e}")
-        
-        # Если все равно нет транзакций
         if not transactions:
             print("Не удалось получить транзакции ни одним способом")
-            transactions = []  # Устанавливаем пустой список
-        
-        # Проверяем структуру транзакций
-        if transactions and len(transactions) > 0:
+            transactions = []
             print(f"Пример структуры транзакции: {transactions[0]}")
             print(f"Ключи в транзакции: {list(transactions[0].keys())}")
-        
-        # Получаем категории пользователя
         categories = db_get_user_categories(user_id)
         print(f"Найдено категорий: {len(categories) if categories else 0}")
-        
-        # Разрешаем создание PDF даже без транзакций, только с категориями
         if not transactions and not categories:
             show_alert(page, "Нет данных для экспорта.", bgcolor='orange')
             print("Нет данных для экспорта")
@@ -304,25 +232,15 @@ def create_settings_view(page, update_transactions_callback, update_categories_c
         
         try:
             print("Создание PDF документа...")
-            
-            # Создаем PDF документ
             pdf = FPDF()
             pdf.add_page()
-            
-            # Используем стандартный шрифт Arial
             pdf.set_font('Arial', '', 16)
-            
-            # Заголовок
             title = f"Financial Report: {current_username}"
             pdf.cell(0, 10, title, ln=True, align='C')
             pdf.ln(5)
-            
-            # Дата генерации
             pdf.set_font('Arial', '', 10)
             pdf.cell(0, 10, f"Generated: {datetime.now().strftime('%d.%m.%Y %H:%M')}", ln=True)
             pdf.ln(10)
-            
-            # Сводная статистика (только если есть транзакции)
             if transactions:
                 pdf.set_font('Arial', 'B', 14)
                 pdf.cell(0, 10, "Summary Statistics", ln=True)
@@ -334,7 +252,6 @@ def create_settings_view(page, update_transactions_callback, update_categories_c
                     
                     for t in transactions:
                         amount = float(t.get('amount', 0))
-                        # Определяем тип транзакции
                         transaction_type = t.get('type', t.get('transaction_type', 'expense')).lower()
                         
                         if transaction_type == 'income':
@@ -355,14 +272,11 @@ def create_settings_view(page, update_transactions_callback, update_categories_c
                     pdf.cell(0, 8, "Error calculating statistics", ln=True)
                     pdf.ln(10)
             else:
-                # Если нет транзакций
                 pdf.set_font('Arial', 'B', 14)
                 pdf.cell(0, 10, "Summary Statistics", ln=True)
                 pdf.set_font('Arial', '', 12)
                 pdf.cell(0, 8, "No transaction data available", ln=True)
                 pdf.ln(10)
-            
-            # Список категорий (только если есть категории)
             if categories:
                 try:
                     pdf.set_font('Arial', 'B', 14)
@@ -370,7 +284,6 @@ def create_settings_view(page, update_transactions_callback, update_categories_c
                     pdf.set_font('Arial', '', 10)
                     
                     for idx, category in enumerate(categories):
-                        # Обрабатываем разные форматы категорий
                         if isinstance(category, dict):
                             category_name = category.get('name', 'No name')
                             category_type = category.get('category_type', 'expense')
@@ -387,8 +300,6 @@ def create_settings_view(page, update_transactions_callback, update_categories_c
                         else:
                             category_name = str(category)
                             category_type = 'expense'
-                        
-                        # Транслитерация кириллицы
                         category_name_translit = transliterate(category_name)
                         category_text = f"{category_name_translit} ({category_type})"
                         
@@ -398,56 +309,40 @@ def create_settings_view(page, update_transactions_callback, update_categories_c
                     print(f"Ошибка при выводе категорий: {cat_error}")
                     import traceback
                     traceback.print_exc()
-            
-            # Детали транзакций (только если есть транзакции)
             if transactions:
                 pdf.set_font('Arial', 'B', 14)
                 pdf.cell(0, 10, "Transaction Details", ln=True)
                 pdf.set_font('Arial', 'B', 10)
-                
-                # Заголовки таблицы
                 col_widths = [30, 40, 50, 30, 40]
                 headers = ["Date", "Type", "Category", "Amount", "Description"]
                 
                 for i, header in enumerate(headers):
                     pdf.cell(col_widths[i], 8, header, border=1)
                 pdf.ln()
-                
-                # Данные транзакций
                 pdf.set_font('Arial', '', 9)
                 
                 try:
                     print(f"Обработка {len(transactions)} транзакций...")
                     
                     for idx, transaction in enumerate(transactions):
-                        # Получаем данные из словаря с проверкой разных ключей
                         date_str = transaction.get('date', transaction.get('created_at', ''))
-                        
-                        # Определяем тип транзакции (пробуем разные ключи)
                         transaction_type = transaction.get('type', 
                                          transaction.get('transaction_type', 
                                          transaction.get('type_', 'expense'))).lower()
-                        
-                        # Получаем категорию
                         category_name = transaction.get('category', 
                                          transaction.get('category_name', 
                                          transaction.get('category', '')))
                         
                         amount = transaction.get('amount', 0)
                         description = transaction.get('description', '')
-                        
-                        # Преобразуем сумму в число
                         try:
                             amount_float = float(amount)
                         except:
                             amount_float = 0.0
-                        
-                        # Форматируем дату
                         date_display = "No date"
                         if date_str:
                             try:
                                 if isinstance(date_str, str):
-                                    # Пробуем разные форматы даты
                                     for fmt in ('%d.%m.%Y %H:%M', '%Y-%m-%d %H:%M:%S', '%Y-%m-%d', '%d.%m.%Y', '%d/%m/%Y'):
                                         try:
                                             date_obj = datetime.strptime(date_str, fmt)
@@ -459,23 +354,13 @@ def create_settings_view(page, update_transactions_callback, update_categories_c
                                     date_display = str(date_str)[:10]
                             except:
                                 date_display = str(date_str)
-                        
-                        # Транслитерация кириллицы
                         category_name_translit = transliterate(category_name) if category_name else "No category"
                         description_translit = transliterate(description) if description else ""
-                        
-                        # Обрезаем слишком длинные описания
                         if description_translit and len(description_translit) > 20:
                             description_translit = description_translit[:20] + "..."
-                        
-                        # Цвет для типа транзакции
                         color = (0, 100, 0) if transaction_type == 'income' else (200, 0, 0)
                         pdf.set_text_color(*color)
-                        
-                        # Определяем отображаемый тип
                         type_display = "Income" if transaction_type == 'income' else "Expense"
-                        
-                        # Данные строки
                         row_data = [
                             date_display,
                             type_display,
@@ -487,8 +372,6 @@ def create_settings_view(page, update_transactions_callback, update_categories_c
                         for i, data in enumerate(row_data):
                             pdf.cell(col_widths[i], 8, str(data), border=1)
                         pdf.ln()
-                        
-                        # Сброс цвета для следующей строки
                         pdf.set_text_color(0, 0, 0)
                         
                         if idx > 0 and idx % 10 == 0:
@@ -506,12 +389,8 @@ def create_settings_view(page, update_transactions_callback, update_categories_c
                 pdf.cell(0, 8, "No transactions available", ln=True)
             
             pdf.ln(10)
-            
-            # Подвал
             pdf.set_font('Arial', 'I', 8)
             pdf.cell(0, 10, "Generated in Finance Tracker", ln=True, align='C')
-            
-            # Создаем временный файл
             temp_file = tempfile.NamedTemporaryFile(
                 delete=False, 
                 suffix='.pdf', 
@@ -519,19 +398,13 @@ def create_settings_view(page, update_transactions_callback, update_categories_c
             )
             
             print(f"Сохранение PDF в файл: {temp_file.name}")
-            
-            # Сохраняем PDF
             pdf.output(temp_file.name)
-            
-            # Проверяем, что файл создан
             if os.path.exists(temp_file.name):
                 file_size = os.path.getsize(temp_file.name)
                 print(f"PDF файл создан успешно! Размер: {file_size} байт")
             else:
                 print("Ошибка: PDF файл не создан!")
                 return None
-            
-            # Сохраняем путь к временному файлу
             file_picker._temp_pdf_file = temp_file.name
             
             print("=== Генерация PDF завершена успешно ===")
@@ -546,40 +419,27 @@ def create_settings_view(page, update_transactions_callback, update_categories_c
             return None
             
     def show_save_dialog(temp_file):
-        """Универсальный диалог сохранения для всех устройств"""
+        
         print(f"Создаю диалог сохранения для файла: {temp_file}")
         
         def save_to_documents_action(e):
-            """Сохраняет в папку Documents"""
+            
             print("Нажата кнопка 'Сохранить в Documents'")
             try:
-                # Создаем папку для документов
                 docs_dir = "Documents"
                 if not os.path.exists(docs_dir):
                     os.makedirs(docs_dir)
-                
-                # Генерируем имя файла
                 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
                 current_username = load_session() or "user"
                 filename = f"finance_report_{current_username}_{timestamp}.pdf"
                 dest_path = os.path.join(docs_dir, filename)
                 
                 print(f"Сохраняю в: {dest_path}")
-                
-                # Копируем файл
                 shutil.copy(temp_file, dest_path)
-                
-                # Удаляем временный файл
                 os.unlink(temp_file)
-                
-                # Закрываем диалог
                 page.dialog = None
                 page.update()
-                
-                # Даем время на закрытие диалога
                 time.sleep(0.1)
-                
-                # Показываем уведомление об успешном сохранении
                 print("Показываю диалог успешного сохранения...")
                 show_success_dialog(dest_path)
                 
@@ -590,18 +450,15 @@ def create_settings_view(page, update_transactions_callback, update_categories_c
                 show_alert(page, f"❌ Ошибка при сохранении:\n{str(ex)}", bgcolor='red')
         
         def open_file_picker(e):
-            """Открывает диалог выбора файла"""
+            
             print("Нажата кнопка 'Выбрать другое место'")
             try:
-                # Для десктопа используем FilePicker
                 filename = f"finance_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
                 file_picker._temp_pdf_file = temp_file
                 file_picker.save_file(
                     file_name=filename,
                     allowed_extensions=["pdf"]
                 )
-                
-                # Закрываем текущий диалог
                 page.dialog = None
                 page.update()
                 
@@ -612,10 +469,9 @@ def create_settings_view(page, update_transactions_callback, update_categories_c
                 show_alert(page, "❌ Не удалось открыть диалог выбора файла", bgcolor='red')
         
         def cancel_action(e):
-            """Отмена сохранения"""
+            
             print("Нажата кнопка 'Отмена'")
             try:
-                # Удаляем временный файл
                 if os.path.exists(temp_file):
                     os.unlink(temp_file)
                     print("Удален временный файл")
@@ -624,18 +480,12 @@ def create_settings_view(page, update_transactions_callback, update_categories_c
             
             page.dialog = None
             page.update()
-        
-        # Определяем, мобильное ли устройство
         is_mobile = screen_width <= 480
         print(f"Экран: ширина={screen_width}, is_mobile={is_mobile}")
-        
-        # Текущий путь для сохранения
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         current_username = load_session() or "user"
         default_filename = f"finance_report_{current_username}_{timestamp}.pdf"
-        
-        # Путь для отображения
-        if is_mobile:  # Мобильное устройство
+        if is_mobile:
             docs_dir = "Documents"
             if not os.path.exists(docs_dir):
                 os.makedirs(docs_dir)
@@ -644,11 +494,7 @@ def create_settings_view(page, update_transactions_callback, update_categories_c
             default_path = os.path.join(os.getcwd(), default_filename)
         
         print(f"Путь по умолчанию: {default_path}")
-        
-        # Создаем кнопки для диалога
         actions = []
-        
-        # Кнопка выбора пути (только для десктопа)
         if not is_mobile:
             actions.append(
                 ElevatedButton(
@@ -659,8 +505,6 @@ def create_settings_view(page, update_transactions_callback, update_categories_c
                     height=40
                 )
             )
-        
-        # Кнопка сохранения в Documents
         actions.append(
             ElevatedButton(
                 "Сохранить в Documents",
@@ -670,8 +514,6 @@ def create_settings_view(page, update_transactions_callback, update_categories_c
                 height=40
             )
         )
-        
-        # Кнопка отмены
         actions.append(
             ElevatedButton(
                 "Отмена",
@@ -681,8 +523,6 @@ def create_settings_view(page, update_transactions_callback, update_categories_c
                 height=40
             )
         )
-        
-        # Создаем диалог
         dialog = AlertDialog(
             modal=True,
             title=Text("Сохранение отчета", size=16, weight=FontWeight.BOLD),
@@ -699,14 +539,12 @@ def create_settings_view(page, update_transactions_callback, update_categories_c
             actions=actions,
             actions_alignment=MainAxisAlignment.CENTER
         )
-        
-        # Устанавливаем и показываем диалог
         page.dialog = dialog
         page.update()
         print("Диалог сохранения показан на экране")
 
     def show_success_dialog(file_path):
-        """Показывает диалог об успешном сохранении"""
+        
         print(f"Показываю диалог успеха для файла: {file_path}")
         
         file_name = os.path.basename(file_path)
@@ -766,11 +604,9 @@ def create_settings_view(page, update_transactions_callback, update_categories_c
     
     
     def transliterate(text):
-        """Простая транслитерация кириллицы в латиницу"""
+        
         if not text or not isinstance(text, str):
             return str(text) if text else ""
-        
-        # Словарь транслитерации
         translit_dict = {
             'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ё': 'yo',
             'ж': 'zh', 'з': 'z', 'и': 'i', 'й': 'y', 'к': 'k', 'л': 'l', 'м': 'm',
@@ -793,13 +629,9 @@ def create_settings_view(page, update_transactions_callback, update_categories_c
     
     
     def export_data(e):
-        """Обработчик экспорта данных"""
+        
         print("Кнопка экспорта нажата")
-        
-        # Вызов отладки
         debug_transactions_structure()
-        
-        # Создаем диалог загрузки
         loading_dialog = AlertDialog(
             modal=True,
             title=Text("Пожалуйста, подождите"),
@@ -810,27 +642,19 @@ def create_settings_view(page, update_transactions_callback, update_categories_c
             ], alignment=MainAxisAlignment.CENTER),
             open=True
         )
-        
-        # Устанавливаем диалог и обновляем страницу
         page.dialog = loading_dialog
         page.update()
         
         print("Показан диалог загрузки")
-        
-        # Запускаем экспорт
         def process_export():
             try:
                 temp_file = generate_pdf_report()
-                
-                # Закрываем диалог загрузки
                 page.dialog.open = False
                 page.update()
                 
                 if temp_file and os.path.exists(temp_file):
                     print(f"PDF сгенерирован успешно: {temp_file}")
                     print(f"Размер файла: {os.path.getsize(temp_file)} байт")
-                    
-                    # Всегда используем FilePicker для выбора места сохранения
                     use_file_picker_for_save(temp_file)
                     
                 elif temp_file:
@@ -840,39 +664,25 @@ def create_settings_view(page, update_transactions_callback, update_categories_c
                     print("Не удалось сгенерировать PDF")
                     
             except Exception as ex:
-                # Закрываем диалог загрузки в случае ошибки
                 if page.dialog:
                     page.dialog.open = False
                     page.update()
                 
                 show_alert(page, f"❌ Ошибка при генерации отчета:\n{str(ex)}", bgcolor='red')
                 print(f"Ошибка экспорта: {ex}")
-        
-        # Даем немного времени для отображения диалога загрузки
         import threading
         import time
         
         def run_with_delay():
-            time.sleep(0.3)  # Даем время для отображения диалога загрузки
-            process_export()
+            time.sleep(0.3)
         
-        threading.Thread(target=run_with_delay, daemon=True).start()
-
-    def use_file_picker_for_save(temp_file):
-        """Использует FilePicker для выбора места сохранения"""
         print(f"Использую FilePicker для сохранения файла: {temp_file}")
-        
-        # Сохраняем путь к временному файлу
         file_picker._temp_pdf_file = temp_file
-        
-        # Генерируем имя файла по умолчанию
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         current_username = load_session() or "user"
         filename = f"finance_report_{current_username}_{timestamp}.pdf"
         
         print(f"Предлагаемое имя файла: {filename}")
-        
-        # Показываем FilePicker для сохранения
         try:
             file_picker.save_file(
                 file_name=filename,
@@ -882,15 +692,14 @@ def create_settings_view(page, update_transactions_callback, update_categories_c
             print("FilePicker показан")
         except Exception as ex:
             print(f"Ошибка при показе FilePicker: {ex}")
-            # Если FilePicker не сработал, показываем простой диалог
             show_simple_save_dialog(temp_file)
 
     def show_simple_save_dialog(temp_file):
-        """Простой диалог сохранения если FilePicker не работает"""
+        
         print("Показываю простой диалог сохранения")
         
         def save_to_current_dir(e):
-            """Сохраняет в текущую директорию"""
+            
             try:
                 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
                 current_username = load_session() or "user"
@@ -898,18 +707,10 @@ def create_settings_view(page, update_transactions_callback, update_categories_c
                 dest_path = os.path.join(os.getcwd(), filename)
                 
                 print(f"Сохраняю в: {dest_path}")
-                
-                # Копируем файл
                 shutil.copy(temp_file, dest_path)
-                
-                # Удаляем временный файл
                 os.unlink(temp_file)
-                
-                # Закрываем диалог
                 page.dialog = None
                 page.update()
-                
-                # Показываем уведомление об успешном сохранении
                 show_alert(page, 
                         f"✅ Отчет сохранен в:\n{dest_path}\n\n"
                         f"Файл: {filename}\n"
@@ -923,9 +724,8 @@ def create_settings_view(page, update_transactions_callback, update_categories_c
                 show_alert(page, f"❌ Ошибка при сохранении:\n{str(ex)}", bgcolor='red')
         
         def cancel_action(e):
-            """Отмена сохранения"""
+            
             try:
-                # Удаляем временный файл
                 if os.path.exists(temp_file):
                     os.unlink(temp_file)
                     print("Удален временный файл")
@@ -934,8 +734,6 @@ def create_settings_view(page, update_transactions_callback, update_categories_c
             
             page.dialog = None
             page.update()
-        
-        # Создаем простой диалог
         dialog = AlertDialog(
             modal=True,
             title=Text("Сохранение отчета", size=16, weight=FontWeight.BOLD),
@@ -966,15 +764,9 @@ def create_settings_view(page, update_transactions_callback, update_categories_c
             ],
             actions_alignment=MainAxisAlignment.CENTER
         )
-        
-        # Устанавливаем и показываем диалог
         page.dialog = dialog
         page.update()
         print("Простой диалог сохранения показан")
-    
-    
-    
-    # Проверяем, является ли пользователь администратором
     is_admin = check_admin_permission()
 
     return Container(
@@ -1001,8 +793,6 @@ def create_settings_view(page, update_transactions_callback, update_categories_c
                     ]
                 ),
                 Container(height=responsive_size(30)),
-                
-                # Раздел управления данными
                 Container(
                     bgcolor=FG,
                     padding=padding.all(responsive_size(15)),
@@ -1014,13 +804,11 @@ def create_settings_view(page, update_transactions_callback, update_categories_c
                                 size=responsive_size(16), 
                                 weight=FontWeight.BOLD),
                             Container(height=responsive_size(15)),
-                            
-                            # Кнопка экспорта в PDF
                             ElevatedButton(
                                 "Сохранить отчет в PDF",
                                 width=screen_width - 2*MOBILE_PADDING,
                                 height=MOBILE_ELEMENT_HEIGHT,
-                                bgcolor="#4CAF50",  # Зеленый цвет
+                                bgcolor="#4CAF50",
                                 color="white",
                                 on_click=export_data
                             ),
@@ -1030,15 +818,13 @@ def create_settings_view(page, update_transactions_callback, update_categories_c
                                 size=responsive_size(12), 
                                 opacity=0.7),
                             Container(height=responsive_size(10)),
-                            
-                            # Кнопка создания бэкапа - показывается только для админов
                             Container(
                                 content=Column([
                                     ElevatedButton(
                                         "Создать бэкап базы данных",
                                         width=screen_width - 2*MOBILE_PADDING,
                                         height=MOBILE_ELEMENT_HEIGHT,
-                                        bgcolor="#2196F3",  # Синий для админов
+                                        bgcolor="#2196F3",
                                         color="white",
                                         on_click=lambda e: backup_database()
                                     ),
@@ -1048,12 +834,7 @@ def create_settings_view(page, update_transactions_callback, update_categories_c
                                         size=responsive_size(12), 
                                         opacity=0.7),
                                 ])
-                            ) if is_admin else Container(height=0),  # Полностью скрываем для не-админов
-                            
-                            Container(height=responsive_size(15) if is_admin else 0),
-                            
-                            # Кнопка очистки транзакций
-                            ElevatedButton(
+                            ) if is_admin else Container(height=0),
                                 "Очистить все транзакции",
                                 width=screen_width - 2*MOBILE_PADDING,
                                 height=MOBILE_ELEMENT_HEIGHT,
@@ -1070,8 +851,6 @@ def create_settings_view(page, update_transactions_callback, update_categories_c
                     )
                 ),
                 Container(height=responsive_size(30)),
-                
-                # Раздел о приложении
                 Container(
                     bgcolor=FG,
                     padding=padding.all(responsive_size(15)),

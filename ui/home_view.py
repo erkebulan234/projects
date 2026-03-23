@@ -4,52 +4,39 @@ from db import db_get_category_stats, db_delete_transaction
 from helpers import  show_alert
 
 def create_home_view(page: Page, callbacks):
-    """Создаёт адаптивный главный view приложения для мобильных"""
+    
     fetch_transactions = callbacks.get("db_fetch_transactions")
     username = callbacks.get("username")
     load_session_func = callbacks.get("load_session")
     greeting_text = callbacks.get("greeting_text")
     screen_width = callbacks.get("screen_width", 400)
     screen_height = callbacks.get("screen_height", 800)
-    
-    # Адаптивные размеры
     mobile_padding = MOBILE_PADDING
     category_card_width = (screen_width - 3*mobile_padding) / 2
-    
-    # Создаем контейнер для ВСЕХ категорий
     all_categories_card = Row(
         scroll="auto", 
         spacing=responsive_size(10),
         height=responsive_size(140)
     )
-    
-    # Список транзакций - создаем контейнер который будем обновлять
     transactions_container = Container(
         height=screen_height - responsive_size(450),
         expand=True
     )
     
     def create_swipeable_transaction_card(trans):
-        """Создает карточку транзакции с кнопкой удаления"""
+        
         trans_id = trans["id"]
         trans_desc = trans.get("description", "Без описания")
 
         def on_delete_click(e):
-            """Обработчик клика на кнопку удаления"""
             
-            # Создаем диалог сначала, чтобы иметь к нему доступ в функциях
             dialog = None
             
             def confirm_delete(e):
-                """Подтверждение удаления"""
-                print(f"✅ Подтверждено удаление транзакции {trans_id}")
-                # Закрываем диалог
-                page.close(dialog)
                 
-                # Удаляем транзакцию
+                print(f"✅ Подтверждено удаление транзакции {trans_id}")
+                page.close(dialog)
                 if db_delete_transaction(trans_id, username):
-                    
-                    # ВАЖНО: Обновляем UI принудительно
                     update_transactions_list()
                     update_categories()
                     page.update()
@@ -58,11 +45,9 @@ def create_home_view(page: Page, callbacks):
                     show_alert(page, "Ошибка при удалении транзакции", bgcolor="red")
             
             def cancel_delete(e):
-                """Отмена удаления"""
+                
                 print(f"❌ Отменено удаление транзакции {trans_id}")
                 page.close(dialog)
-            
-            # Создаем и показываем диалог
             try:
                 dialog = AlertDialog(
                     modal=True,
@@ -88,8 +73,6 @@ def create_home_view(page: Page, callbacks):
                 print(f"❌ Ошибка при создании диалога: {ex}")
                 import traceback
                 traceback.print_exc()
-
-        # Создаем карточку с кнопкой удаления
         card_content = Container(
             height=responsive_size(70),
             bgcolor=BG,
@@ -127,9 +110,7 @@ def create_home_view(page: Page, callbacks):
         return card_content
     
     def update_transactions_list():
-        """Обновляет список транзакций на главной"""
         
-        # Создаем новый Column каждый раз
         new_transactions = Column(
             spacing=responsive_size(8),
             scroll=ScrollMode.AUTO,
@@ -160,7 +141,6 @@ def create_home_view(page: Page, callbacks):
                     )
                 )
             else:
-                # Создаем карточки транзакций
                 for trans in transactions_data[:8]:
                     try:
                         card = create_swipeable_transaction_card(trans)
@@ -177,8 +157,6 @@ def create_home_view(page: Page, callbacks):
                                 content=Text(f"Ошибка отображения транзакции", color=FWG)
                             )
                         )
-        
-        # Обновляем контейнер с новым содержимым
         transactions_container.content = new_transactions
 
     def show_category_transactions(category):
@@ -187,7 +165,7 @@ def create_home_view(page: Page, callbacks):
         return handler
     
     def update_categories():
-        """Обновляет список всех категорий"""
+        
         current_username = load_session_func()
         if not current_username:
             category_stats = {}
@@ -230,7 +208,7 @@ def create_home_view(page: Page, callbacks):
             )
 
     def refresh_home_ui():
-        """Обновляет список транзакций и статистику категорий на главной"""
+        
         update_categories()
         update_transactions_list()
         
@@ -240,16 +218,10 @@ def create_home_view(page: Page, callbacks):
         
         page.update()
         return True
-    
-    # Сохраняем коллбеки для обновления
     callbacks['transactions'] = update_transactions_list
     callbacks['categories'] = update_categories
     callbacks['refresh_home_ui'] = refresh_home_ui
-    
-    # Начальное обновление
     refresh_home_ui()
-    
-    # Создаем FloatingActionButton
     fab = FloatingActionButton(
         icon=Icons.ADD,
         bgcolor=PINK,
@@ -340,8 +312,6 @@ def create_home_view(page: Page, callbacks):
                             ]
                         ),
                         Container(height=responsive_size(10)),
-                        
-                        # Используем контейнер транзакций напрямую
                         transactions_container,
                         
                         Container(height=responsive_size(40))

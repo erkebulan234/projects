@@ -4,7 +4,7 @@ from db import db_get_statistics
 from helpers import load_session
 
 def create_category_list(stats_list, title_color, colors_list, total_amount):
-    """Создает список категорий с цветами"""
+    
     category_list = Column(scroll="auto", spacing=responsive_size(8))
     color_index = 0
     
@@ -101,7 +101,7 @@ def create_category_list(stats_list, title_color, colors_list, total_amount):
     )
 
 def create_statistics_view(page):
-    """Создаёт адаптивный view для статистики для мобильных"""
+    
     screen_width = page.window.width or 400
     screen_height = page.window.height or 800
     
@@ -149,13 +149,7 @@ def create_statistics_view(page):
     expense_stats = stats.get("expense_stats", [])
     income_stats = stats.get("income_stats", [])
 
-    selected_tab = {"value": "expenses"}  # Используем словарь для изменяемости
-
-    expense_stats_container = Container()
-    income_stats_container = Container()
-    
-    # Кнопки переключения (создаем отдельно для обновления)
-    expense_button = ElevatedButton(
+    selected_tab = {"value": "expenses"}
         "Расходы",
         bgcolor=EXPENSE_COLOR,
         color=FWG,
@@ -187,7 +181,7 @@ def create_statistics_view(page):
     income_button.on_click = switch_to_income
 
     def create_pie_chart(stats_list, total_amount, is_expense=True):
-        """Создает круговую диаграмму"""
+        
         pie_sectors = []
         
         if not stats_list or total_amount == 0:
@@ -221,7 +215,7 @@ def create_statistics_view(page):
     
 
     def update_statistics_display():
-        """Обновляет отображение статистики в зависимости от выбранной вкладки"""
+        
         
         if selected_tab["value"] == "expenses":
             pie_sectors = create_pie_chart(expense_stats, total_expense, is_expense=True)

@@ -1,7 +1,7 @@
 from flet import AlertDialog, Text, TextButton, MainAxisAlignment
 
 def create_alert_dialog():
-    """Создаёт общий объект AlertDialog"""
+    
     return AlertDialog(
         modal=True,
         title=Text("Заголовок"),
@@ -13,17 +13,15 @@ def create_alert_dialog():
     )
 
 def close_alert(page):
-    """Закрывает всплывающее окно"""
+    
     page.dialog.open = False
     page.update()
 
-"""
-Модуль для показа уведомлений
-"""
+
 from flet import SnackBar, Text
 
 def show_alert(page, message, bgcolor='red'):
-    """Показывает всплывающее уведомление"""
+    
     page.snack_bar = SnackBar(
         content=Text(message, color="white"),
         bgcolor=bgcolor

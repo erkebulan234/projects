@@ -4,7 +4,7 @@ from db import db_fetch_notifications, db_mark_notification_read, get_unread_cou
 from helpers import load_session
 
 def create_notifications_button(page, user_id):
-    """Создаёт кнопку с индикатором непрочитанных уведомлений (адаптированную)"""
+    
     unread_count = get_unread_count(user_id)
     
     return Container(
@@ -34,7 +34,7 @@ def create_notifications_button(page, user_id):
     )
 
 def create_notifications_view(page, user_id):
-    """Создаёт адаптивный view для уведомлений для мобильных"""
+    
     screen_width = page.window.width or 400
     screen_height = page.window.height or 800
 
@@ -100,26 +100,7 @@ def create_notifications_view(page, user_id):
                                         size=responsive_size(13),
                                         max_lines=3,
                                         overflow=TextOverflow.ELLIPSIS,
-                                        expand=True  # Используем expand=True вместо Expanded
-                                    ),
-                                    Icon(Icons.CIRCLE, 
-                                        size=responsive_size(8), 
-                                        color=color) if not is_read else Container(width=responsive_size(8))
-                                ],
-                                vertical_alignment=CrossAxisAlignment.START
-                            ),
-                            Container(height=responsive_size(5)),
-                            Text(time_str, 
-                                color=FWG, 
-                                size=responsive_size(10), 
-                                opacity=0.6)
-                        ]
-                    )
-                )
-            )
-        
-        return Column(
-            controls=list_controls,
+                                        expand=True
             scroll="auto",
             expand=True,
             spacing=0

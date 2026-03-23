@@ -6,11 +6,9 @@ from db import db_fetch_all_transactions
 from helpers import load_session
 
 def create_search_view(page):
-    """Создаёт адаптивный view для поиска для мобильных"""
+    
     screen_width = page.window.width or 400
     screen_height = page.window.height or 800
-    
-    # Получаем текущего пользователя
     current_username = load_session()
     
     start_date_value = None
@@ -61,7 +59,7 @@ def create_search_view(page):
     )
 
     def highlight_match(text, keywords, default_color):
-        """Функция для подсветки совпадений в тексте"""
+        
         pattern = '|'.join(re.escape(k) for k in keywords if k)
         if not pattern:
             return Text(text, color=default_color, weight=FontWeight.BOLD, size=responsive_size(13))
@@ -181,7 +179,6 @@ def create_search_view(page):
     search_field.on_change = lambda e: filter_and_display_results()
 
     def filter_and_display_results(e=None):
-        # Проверяем авторизацию
         if not current_username:
             search_results.controls.clear()
             search_results.controls.append(
@@ -209,8 +206,6 @@ def create_search_view(page):
             max_amount = float((max_amount_field.value or '999999999').replace(',', '.'))
         except: 
             max_amount = 999999999
-        
-        # Передаём username в db_fetch_all_transactions
         all_records = db_fetch_all_transactions(current_username)
         found = []
         
@@ -306,8 +301,7 @@ def create_search_view(page):
                                             color=FWG,
                                             weight=FontWeight.BOLD,
                                             size=responsive_size(13),
-                                            expand=True  # Используем expand=True вместо Expanded
-                                        ),
+                                            expand=True
                                         Text(f"₸{trans['amount']}", 
                                             color=PINK, 
                                             size=responsive_size(13), 
@@ -346,26 +340,7 @@ def create_search_view(page):
                                     size=responsive_size(18), 
                                     color=FWG, 
                                     weight=FontWeight.BOLD,
-                                    expand=True)  # Используем expand=True
-                            ]
-                        ),
-                        Container(height=responsive_size(25)),
-                        Row(
-                            controls=[
-                                Container(
-                                    content=search_field,
-                                    expand=True  # Используем expand=True
-                                ),
-                                IconButton(
-                                    icon=Icons.CLEAR, 
-                                    icon_color=Colors.GREY,
-                                    icon_size=responsive_size(20),
-                                    on_click=clear_filters
-                                )
-                            ],
-                            alignment=MainAxisAlignment.SPACE_BETWEEN
-                        ),
-                        Container(height=responsive_size(15)),
+                                    expand=True)
                         Text("Фильтр по сумме", 
                             color=FWG, 
                             size=responsive_size(14), 

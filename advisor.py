@@ -1,6 +1,4 @@
-"""
-Модуль advisor.py - AI-советник по финансам с сохранением истории чата (БЕЗ СЕССИЙ)
-"""
+
 from datetime import datetime, timedelta
 from db.statistics import db_get_expenses_summary, db_get_income_summary, db_get_transactions_period
 from db import get_current_user_id, db_fetch_user_transactions, save_chat_message, get_chat_history, clear_chat_history
@@ -8,26 +6,20 @@ from helpers import load_session
 import re
 
 def get_savings_advice(total_expenses, total_income, top_categories):
-    """Советы по экономии"""
+    
     if total_expenses == 0:
         return "У вас пока нет расходов. Начните отслеживать свои траты, чтобы я мог дать персонализированные советы!"
     
     response = "**Советы по экономии:**\n\n"
-    
-    # 1. Анализ общих показателей
     savings_rate = ((total_income - total_expenses) / total_income * 100) if total_income > 0 else 0
     response += f"1. Ваши расходы: ₸{total_expenses:.2f}\n"
     if total_income > 0:
         response += f"   Доходы: ₸{total_income:.2f}\n"
         response += f"   Норма сбережений: {savings_rate:.1f}%\n"
-    
-    # 2. Анализ топ-категорий расходов
     if top_categories:
         response += "\n2. Самые затратные категории:\n"
         for i, (cat_name, amount, percentage) in enumerate(top_categories[:3], 1):
             response += f"   {i}. {cat_name}: ₸{amount:.2f} ({percentage:.1f}% от расходов)\n"
-        
-        # Конкретные советы для топ-категорий
         if top_categories:
             top_category = top_categories[0][0] if top_categories else ""
             if top_category == "Продукты":
@@ -42,8 +34,6 @@ def get_savings_advice(total_expenses, total_income, top_categories):
                 response += "   • Объединяйте поездки\n"
                 response += "   • Рассмотрите каршеринг\n"
                 response += "   • Следите за техобслуживанием авто\n"
-    
-    # 3. Общие рекомендации
     response += "\n3. Общие рекомендации:\n"
     response += "   • Откладывайте 10-20% дохода сразу\n"
     response += "   • Используйте правило 24 часов для импульсных покупок\n"
@@ -53,19 +43,15 @@ def get_savings_advice(total_expenses, total_income, top_categories):
     return response
 
 def get_budget_advice(total_income, total_expenses):
-    """Советы по составлению бюджета"""
+    
     if total_income == 0:
         return "Для составления бюджета сначала добавьте информацию о ваших доходах."
     
     response = "**Советы по составлению бюджета:**\n\n"
-    
-    # Классическое правило 50/30/20
     response += "1. **Правило 50/30/20** (рекомендация):\n"
     response += f"   • Необходимое (50%): ₸{total_income * 0.5:.2f}\n"
     response += f"   • Желания (30%): ₸{total_income * 0.3:.2f}\n"
     response += f"   • Накопления (20%): ₸{total_income * 0.2:.2f}\n"
-    
-    # Анализ текущей ситуации
     if total_expenses > 0:
         necessary_ratio = (total_expenses / total_income) * 100
         response += f"\n2. **Ваша текущая ситуация:**\n"
@@ -77,8 +63,6 @@ def get_budget_advice(total_income, total_expenses):
             response += "   ⚠️ Расходы на грани. Уделите внимание экономии.\n"
         else:
             response += "   ✅ Отличный показатель! У вас хороший баланс.\n"
-    
-    # Практические советы
     response += "\n3. **Практические шаги:**\n"
     response += "   • Ведите учёт всех доходов и расходов\n"
     response += "   • Создайте резервный фонд (3-6 месяцев расходов)\n"
@@ -88,10 +72,8 @@ def get_budget_advice(total_income, total_expenses):
     return response
 
 def get_savings_investment_advice(total_income, total_expenses):
-    """Советы по накоплениям и инвестициям"""
-    response = "💰 **Советы по накоплениям и инвестициям:**\n\n"
     
-    # 1. Финансовая подушка безопасности
+    response = "💰 **Советы по накоплениям и инвестициям:**\n\n"
     response += "1. **Подушка безопасности:**\n"
     response += "   • Цель: 3-6 месяцев расходов\n"
     if total_expenses > 0:
@@ -99,22 +81,16 @@ def get_savings_investment_advice(total_income, total_expenses):
         cushion_max = total_expenses * 6
         response += f"   • Для вас: ₸{cushion_min:.2f} - ₸{cushion_max:.2f}\n"
         response += "   • Храните в надёжном банке\n"
-    
-    # 2. Система накоплений
     response += "\n2. **Система накоплений:**\n"
     response += "   • Автоматизируйте переводы на сбережения\n"
     response += "   • 'Заплати сначала себе' - откладывайте сразу после получения дохода\n"
     response += "   • Разделяйте цели: краткосрочные, среднесрочные, долгосрочные\n"
-    
-    # 3. Инвестиционные советы
     response += "\n3. **Основы инвестиций:**\n"
     response += "   • Начинайте с малых сумм\n"
     response += "   • Диверсифицируйте портфель\n"
     response += "   • Инвестируйте в то, что понимаете\n"
     response += "   • Думайте долгосрочно\n"
     response += "   • Рассмотрите: акции, облигации, ETF, недвижимость (REIT)\n"
-    
-    # 4. Риски
     response += "\n4. **Управление рисками:**\n"
     response += "   • Не вкладывайте последние деньги\n"
     response += "   • Изучайте инструменты перед инвестированием\n"
@@ -123,7 +99,7 @@ def get_savings_investment_advice(total_income, total_expenses):
     return response
 
 def get_expense_analysis(total_expenses, top_categories):
-    """Анализ расходов"""
+    
     if total_expenses == 0:
         return "У вас пока нет зарегистрированных расходов. Начните добавлять транзакции для анализа!"
     
@@ -141,8 +117,6 @@ def get_expense_analysis(total_expenses, top_categories):
                    "👕" if "одежда" in cat_name.lower() else "📊"
             
             response += f"{emoji} {cat_name}: ₸{amount:.2f} ({percentage:.1f}%)\n"
-        
-        # Выводы
         response += "\n**Выводы и рекомендации:**\n"
         if len(top_categories) > 0 and top_categories[0][2] > 40:
             response += f"• Категория '{top_categories[0][0]}' занимает слишком большую долю ({top_categories[0][2]:.1f}%)\n"
@@ -157,7 +131,7 @@ def get_expense_analysis(total_expenses, top_categories):
     return response
 
 def get_income_analysis(total_income, top_categories):
-    """Анализ доходов"""
+    
     if total_income == 0:
         return "У вас пока нет зарегистрированных доходов. Добавьте информацию о доходах для анализа!"
     
@@ -186,7 +160,7 @@ def get_income_analysis(total_income, top_categories):
     return response
 
 def get_financial_health_advice(total_income, total_expenses):
-    """Оценка финансового здоровья"""
+    
     if total_income == 0:
         return "Для оценки финансового здоровья добавьте информацию о доходах и расходах."
     
@@ -230,42 +204,11 @@ def get_financial_health_advice(total_income, total_expenses):
     return response
 
 def get_help_message():
-    """Сообщение со списком возможностей"""
-    return """🤖 **Что я умею:**
-
-**Команды чата:**
-• /clear или "очистить чат" - очистить историю чата
-• /history - показать историю сообщений
-• /help - показать это сообщение
-
-**Финансовый анализ:**
-• "Проанализируй мои расходы"
-• "Покажи мои доходы" 
-• "Оцени моё финансовое здоровье"
-
-**Бюджет и планирование:**
-• "Помоги составить бюджет"
-• "Советы по планированию бюджета"
-
-**Экономия и оптимизация:**
-• "Как мне экономить?"
-• "Как сократить расходы на [категорию]?"
-
-**Накопления и инвестиции:**
-• "Как начать копить?"
-• "Советы по инвестициям"
-• "Создание финансовой подушки"
-
-**Примеры вопросов:**
-• "На что я трачу больше всего?"
-• "Какой у меня должен быть бюджет?"
-• "Как экономить на продуктах?"
-• "Как создать подушку безопасности?"
-
-**Задайте вопрос в свободной форме, и я постараюсь помочь!**"""
+    
+    return 
 
 def get_general_advice(total_income, total_expenses, question):
-    """Общий совет на неизвестный вопрос"""
+    
     if total_income == 0 and total_expenses == 0:
         return "Привет! Я ваш финансовый помощник. Начните добавлять доходы и расходы в приложение, чтобы получать персонализированные советы.\n\nНапишите:\n• 'Как начать вести учёт?'\n• 'С чего начать планирование бюджета?'\n• 'Базовые советы по финансам'"
 
@@ -279,9 +222,7 @@ def get_general_advice(total_income, total_expenses, question):
         return f"Я ваш финансовый помощник. На основе ваших данных могу дать советы по:\n• Экономии (вы тратите ₸{total_expenses:.2f})\n• Бюджету (доходы: ₸{total_income:.2f})\n• Накоплениям\n• Инвестициям\n\nЗадайте конкретный вопрос!"
 
 def ai_answer(user_question, user_id=None):
-    """
-    Генерирует ответ AI-советника и сохраняет историю (БЕЗ СЕССИЙ)
-    """
+    
     try:
         current_username = load_session()
         
@@ -292,11 +233,7 @@ def ai_answer(user_question, user_id=None):
             user_id = get_current_user_id(current_username)
             if not user_id:
                 return "Ошибка: не удалось получить данные пользователя."
-        
-        # Сохраняем вопрос пользователя (БЕЗ session_id)
         save_chat_message(user_id, None, user_question, 'user')
-        
-        # Обработка специальных команд
         question_lower = user_question.lower().strip()
         
         if question_lower in ["/clear", "очистить", "очистить чат", "/clean"]:
@@ -322,11 +259,7 @@ def ai_answer(user_question, user_id=None):
             response = get_help_message()
             save_chat_message(user_id, None, response, 'ai')
             return response
-        
-        # Генерируем ответ на основе вопроса
         response = generate_ai_response(user_question, current_username, user_id)
-        
-        # Сохраняем ответ AI
         save_chat_message(user_id, None, response, 'ai')
         
         return response
@@ -342,16 +275,12 @@ def ai_answer(user_question, user_id=None):
 
 
 def generate_ai_response(user_question, username, user_id):
-    """
-    Генерирует ответ на основе вопроса
-    """
+    
     try:
         from db.statistics import db_get_expenses_summary, db_get_income_summary
         
         expenses_summary = db_get_expenses_summary(username)
         income_summary = db_get_income_summary(username)
-        
-        # Получаем историю для контекста
         chat_history = get_chat_history(user_id, limit=5)
         
         total_expenses = expenses_summary.get("total_expenses", 0)
@@ -360,12 +289,8 @@ def generate_ai_response(user_question, username, user_id):
         top_income_categories = income_summary.get("top_categories", [])
         
         question_lower = user_question.lower().strip()
-        
-        # Проверяем благодарность
         if any(word in question_lower for word in ["спасибо", "благодарю", "отлично", "хорошо"]):
             return "Пожалуйста! Рад был помочь 😊\n\nЕсли у вас есть ещё вопросы по финансам - обращайтесь!"
-        
-        # Проверяем приветствие
         if any(word in question_lower for word in ["привет", "здравствуй", "добрый день", "доброе утро"]):
             greeting = f"Привет! Я ваш финансовый помощник. "
             if total_expenses > 0 or total_income > 0:

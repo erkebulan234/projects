@@ -3,7 +3,7 @@ import psycopg2
 import psycopg2.extras
 
 def get_db_conn():
-    """Создаёт подключение к PostgreSQL"""
+    
     return psycopg2.connect(
         host=os.getenv("PG_HOST", "localhost"),
         port=os.getenv("PG_PORT", "5432"),
